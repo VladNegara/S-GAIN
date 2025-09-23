@@ -19,19 +19,21 @@
 (3) plot_graphs: load and plot the graphs (RMSE, imputation time, memory usage, energy_consumption, loss and FLOPs)
 """
 
+import matplotlib.pyplot as plt
+
 from datetime import timedelta
 from matplotlib import ticker
 
-import matplotlib.pyplot as plt
 
-
-def get_sizing(ncols, nrows, ax_width, ax_height):
+def get_sizing(ncols, nrows, ax_width, ax_height, w_space=1.28, h_space=1.2):
     """Calculates the different sizes for the plot.
 
     :param ncols: the number of columns in the plot
     :param nrows: the number of rows in the plot
     :param ax_width: the width of the subplots
     :param ax_height: the height of the subplots
+    :param w_space: the width of the whitespace
+    :param h_space: the height of the whitespace
 
     :return:
     - fig_width: total width of the figure
@@ -42,21 +44,23 @@ def get_sizing(ncols, nrows, ax_width, ax_height):
     - bottom: bottom margin of the figure
     - wspace: the horizontal padding between two subplots
     - hspace: the vertical padding between two subplots
+    - title: the (relative) position of the title in the figure
     """
 
     # Margins (absolute)
-    left_abs = 1.28
+    left_abs = w_space
     right_abs = 0.52
     top_abs = 2
     bottom_abs = 1
+    title_abs = 0.76
 
     # Subplots (absolute)
     ax_width_total = ax_width * ncols
     ax_height_total = ax_height * nrows
 
     # Padding (absolute)
-    wspace_abs = 1.28
-    hspace_abs = 1.2
+    wspace_abs = w_space
+    hspace_abs = h_space
     wspace_total = wspace_abs * (ncols - 1)
     hspace_total = hspace_abs * (nrows - 1)
 
@@ -65,16 +69,17 @@ def get_sizing(ncols, nrows, ax_width, ax_height):
     fig_height = top_abs + ax_height_total + hspace_total + bottom_abs
 
     # Margins (relative)
-    left = 1 / (fig_width / left_abs)
-    right = 1 - 1 / (fig_width / right_abs)
-    top = 1 - 1 / (fig_height / top_abs)
-    bottom = 1 / (fig_height / bottom_abs)
+    left = left_abs / fig_width
+    right = 1 - right_abs / fig_width
+    top = 1 - top_abs / fig_height
+    bottom = bottom_abs / fig_height
+    title = (fig_height - title_abs) / fig_height
 
     # Padding (relative)
     wspace = wspace_abs / ax_width
     hspace = hspace_abs / ax_height
 
-    return fig_width, fig_height, left, right, top, bottom, wspace, hspace
+    return fig_width, fig_height, left, right, top, bottom, wspace, hspace, title
 
 
 def plot_info(ax, text, x=0.0, y=0.97):
@@ -137,7 +142,7 @@ def plot_graphs(filepath, rmse_log=None, imputation_time_log=None, memory_usage_
     if nrows == 0: return
 
     # New plot
-    width, height, left, right, top, bottom, wspace, hspace = get_sizing(1, nrows, 12.8, 4.8)
+    width, height, left, right, top, bottom, wspace, hspace, y_title = get_sizing(1, nrows, 12.8, 4.8)
     fig, axs = plt.subplots(nrows, figsize=(width, height))
 
     index = 0
@@ -369,7 +374,7 @@ def plot_graphs(filepath, rmse_log=None, imputation_time_log=None, memory_usage_
     # Plot parameters
     m = int(len(title) / 2)
     title = title[:m] + title[m:].replace('_', '\n_', 1)
-    plt.suptitle(title, size=22)
+    plt.suptitle(title, size=22, y=y_title)
     plt.subplots_adjust(left=left, right=right, top=top, bottom=bottom, wspace=wspace, hspace=hspace)
 
     # Save plot

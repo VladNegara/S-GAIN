@@ -7,10 +7,22 @@ Sparse Initialization", IDEAL conference, 2025.
 
 Authors: Brian Patrick van Oers, Işıl Baysal Erez, Maurice van Keulen
 
+Release: This paper is associated with [pre-release v0.1.0-alpha](
+https://github.com/BrianPvanOers/S-GAIN/releases/tag/v0.1.0-alpha) *
+
 Contact: b.p.vanoers@student.utwente.nl
 
-We adapted the original GAIN code for our work: J. Yoon, J. Jordon and M. van der Schaar,
-["GAIN: Missing Data Imputation using Generative Adversarial Nets," International Conference on Machine Learning (ICML), 2018.](https://github.com/jsyoon0823/GAIN)
+\* Alternatively one may import s_gain from models.IDEAL2025.s_gain_TFv1_FP32_init_only in main.py to run the
+experiments associated with this paper with the current tools for analysis. The settings used for the experiments
+discussed in this paper are also available in run_experiments.py for easy replication.
+
+---
+
+## About the project
+
+We adapted the original GAIN code for our work: [J. Yoon, J. Jordon and M. van der Schaar, "GAIN: Missing Data
+Imputation using Generative Adversarial Nets," International Conference on Machine Learning (ICML), 2018.](
+https://github.com/jsyoon0823/GAIN)
 
 We created a framework for (automated) testing and implemented sparse initialization approaches to improve computational
 efficiency and therefore energy consumption, memory usage and imputation time, and possibly increase performance and
@@ -101,7 +113,7 @@ $ python main.py spam --verbose --no_log --no_graph --no_model --no_save --no_sy
 - **verbose:** enable verbose logging
 
 ```shell
-$ python log_and_graph.py --verbose
+$ python log_and_graphs.py --verbose
 ```
 
 ---
@@ -111,6 +123,7 @@ $ python log_and_graph.py --verbose
 - **all:** plot all the graphs
 - **rmse:** plot the RMSE graphs
 - **success_rate:** plot the success rate graphs
+- **imputation_time:** plot the imputation time graphs
 - **save:** save the analysis
 - **input (experiments):** the folder where the experiments were saved to (optional, default: output)
 - **output (analysis):** save the analysis to a different folder (optional, default: analysis)
@@ -121,8 +134,16 @@ $ python log_and_graph.py --verbose
 $ python analyze.py --all --save --experiments output --analysis analysis --verbose
 ```
 
-- **exps:** a Pandas DataFrame with the computed metrics (RMSE mean, std and improvement, successes, total and success
-  rate)
+- **exps:** a Pandas DataFrame with the computed metrics (RMSE mean, std and improvement, successes, total, success
+  rate and imputation times (total, preparation, S-GAIN and finalization steps))
+
+---
+
+### Run_experiments
+
+One may use this file to run multiple experiments in sequence, automatically analyze them and if needed shutdown the
+computer after wards.
+
 
 ---
 
@@ -143,6 +164,8 @@ $ python analyze.py --all --save --experiments output --analysis analysis --verb
 ####
 
 - **models:** Contains the different models. Currently only contains S-GAIN.
+- **models/IDEAL2025/s_gain_TFv1_FP32_init_only.py:** The S-GAIN imputer. This version is associated with the IDEAL 2025
+  paper, it uses TensorFlow 1.x, FP32 precision and only applies sparse initialization.
 - **models/s_gain_TFv2_INT8.py:** The S-GAIN imputer. This version uses TensorFlow 2.x and INT8 precision.
 - **models/s_gain_TFv1_FP32.py:** The S-GAIN imputer. This version uses TensorFlow 1.x and FP32 precision.
 

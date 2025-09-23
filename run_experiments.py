@@ -27,7 +27,10 @@ from datetime import timedelta
 
 from utils.load_store import get_experiments, read_bin
 
-# # Settings used in the Sparse GAIN paper
+"""
+Settings used for B.P. van Oers, I. Baysal Erez, M. van Keulen, "Sparse GAIN: Imputation Methods to Handle Missing
+Values with Sparse Initialization", IDEAL conference, 2025.
+"""
 # datasets = ['spam', 'letter', 'health', 'fashion_mnist']
 # miss_rates = [0.2]
 # miss_modalities = ['MCAR']
