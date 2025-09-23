@@ -43,9 +43,19 @@ def data_loader(dataset, miss_rate, miss_modality='MCAR', seed=None):
         return None
 
     # Introduce missing elements in the data
-    no, dim = data_x.shape
-    data_mask = binary_sampler(1 - miss_rate, no, dim, seed)
-    miss_data_x = data_x.copy()
-    miss_data_x[data_mask == 0] = np.nan
+    if miss_modality == 'MCAR':
+        no, dim = data_x.shape
+        data_mask = binary_sampler(1 - miss_rate, no, dim, seed)
+        miss_data_x = data_x.copy()
+        miss_data_x[data_mask == 0] = np.nan
+    elif miss_modality == 'MAR':
+        print('MAR not yet implemented. Exiting the program.')
+        return None
+    elif miss_modality == 'MNAR':
+        print('MNAR not yet implemented. Exiting the program.')
+        return None
+    else:
+        print('Invalid miss modality. Exiting the program.')
+        return None
 
     return data_x, miss_data_x, data_mask
