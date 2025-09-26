@@ -44,6 +44,43 @@ def binary_sampler(p, rows, cols, seed=None):
     binary_random_matrix = 1 * (uniform_random_matrix < p)
     return binary_random_matrix
 
+def mar_sampler(X, p_m, seed=None):
+    """Sample random variables.
+
+    :param X: data matrix of shape (rows, cols)
+    :param p_m: vector of prior missingness probabilities per column
+    :param seed: the random seed
+
+    :return: matrix_mask
+    """
+    
+    if seed: np.random.seed(seed)
+    rows, cols, = X.shape
+    M = np.ones((rows, cols))
+
+    w = np.random.rand(cols)  # weights
+    b = np.random.rand(cols)  # biases
+
+    pm = np.full(cols, p_m)
+
+    for i in range(cols):
+
+        logits = np.zeros(rows)
+
+        for j in range(i):
+            logits -= w[j] * M[:, j] * X[:, j] + b[j] * (1 - M[:, j]) # to get the negative sum
+
+        exp_logits = np.exp(logits)
+        probs = pm[i] * rows * exp_logits / np.sum(exp_logits) # Value of P_i^M(n)
+
+        # Clip probs into [0,1]
+        probs = np.clip(probs, 0, 1)
+
+        # Sample missingness
+        M[:, i] = np.random.binomial(1, 1 - probs)  # 1=observed, 0=missing
+
+
+    return M
 
 def uniform_sampler(low, high, rows, cols):
     """Sample uniform random variables.
