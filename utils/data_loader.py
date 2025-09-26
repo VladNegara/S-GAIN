@@ -59,4 +59,6 @@ def data_loader(dataset, miss_rate, miss_modality='MCAR', seed=None):
         print('Invalid miss modality. Exiting the program.')
         return None
 
+    # np.savetxt('test.out', miss_data_x, delimiter=',')
+
     return data_x, miss_data_x, data_mask
