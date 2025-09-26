@@ -44,55 +44,58 @@ def binary_sampler(p, rows, cols, seed=None):
     binary_random_matrix = 1 * (uniform_random_matrix < p)
     return binary_random_matrix
 
-def mar_sampler(X, p_m, seed=None, standardize=True, w_scale=0.1):
-    """
-    Optimized MAR sampler with numerically stable softmax-like formula.
-    Returns mask M (1 observed, 0 missing).
-    """
+def mar_sampler(X:np.ndarray, p_m:float, seed=None):
     if seed is not None:
         np.random.seed(seed)
     
-    X = np.asarray(X, dtype=float)
-    rows, cols = X.shape
-    M = np.ones((rows, cols), dtype=int)
+    n_samples, n_features = X.shape
+    X_missing = X.copy()
     
-    # Handle p_m input
-    p_m = np.broadcast_to(np.asarray(p_m, dtype=float), cols)
+    # Standardize to prevent numerical overflow
+    X_std = (X - np.mean(X, axis=0)) / (np.std(X, axis=0) + 1e-8)
+    X_missing_std = X_std.copy()
     
-    # Optionally standardize features
-    if standardize:
-        std = X.std(axis=0, ddof=0)
-        std = np.where(std == 0, 1.0, std)
-        X = (X - X.mean(axis=0)) / std
+    M = np.ones_like(X, dtype=float)
     
-    # Generate random weights and biases once
-    w = np.random.uniform(size=cols) 
-    b = np.random.uniform(size=cols)
+    # Sample weights and biases - use smaller values to prevent extreme probabilities
+    w = np.random.uniform(0, 1, n_features)  # Reduced from 1 to 0.1
+    b = np.random.uniform(0, 1, n_features)  # Reduced from 1 to 0.1
     
-    # Process each column
-    for i in range(cols):
-        if i == 0:
-            # First column: uniform probabilities
-            probs = np.ones(rows) / rows
-        else:
-            # Compute logits using vectorized operations
-            prev_cols = slice(0, i)
-            observed_term = (w[prev_cols] * X[:, prev_cols] * M[:, prev_cols]).sum(axis=1)
-            missing_term = (b[prev_cols] * (1 - M[:, prev_cols])).sum(axis=1)
-            logits = -(observed_term + missing_term)
-            
-            # Numerically stable softmax
-            logits_max = logits.max()
-            exp_logits = np.exp(logits - logits_max)
-            probs = exp_logits / exp_logits.sum()
+    # Process each feature sequentially
+    for i in range(n_features):
+        # Compute logits for all samples for feature i
+        logits = np.zeros(n_samples)
         
-        # Sample missing entries
-        n_missing = np.random.binomial(rows, p_m[i])
-        if n_missing > 0:
-            missing_rows = np.random.choice(rows, size=n_missing, replace=False, p=probs)
-            M[missing_rows, i] = 0
+        for n in range(n_samples):
+            for j in range(i):  # Previous features only
+                logits[n] += w[j] * M[n, j] * X_missing_std[n, j] + b[j] * (1 - M[n, j])
+        
+        exp_neg_logits = np.exp(-logits)
+        
+        # Compute Z (denominator)
+        Z = np.sum(exp_neg_logits)
+        
+        # Avoid divide by 0
+        if Z == 0:
+            Z = 1e-10
+        
+        # Compute probability of missingness for each sample
+        probs_missing = (p_m * n_samples * exp_neg_logits) / Z
+        
+        # Clip probabilities
+        probs_missing = np.clip(probs_missing, 0, 1)
+        
+        # Sample missingness for all samples at feature i
+        for n in range(n_samples):
+            # M[n,i] = 1 means observed, M[n,i] = 0 means missing
+            # We want to sample "is observed?" with probability (1 - prob_missing)
+            M[n, i] = 1 - np.random.binomial(1, probs_missing[n])
+            
+            if M[n, i] == 0:
+                X_missing[n, i] = np.nan
+                X_missing_std[n, i] = 0
     
-    return M
+    return X_missing, M
 
 def uniform_sampler(low, high, rows, cols):
     """Sample uniform random variables.

@@ -49,9 +49,7 @@ def data_loader(dataset, miss_rate, miss_modality='MCAR', seed=None):
         miss_data_x = data_x.copy()
         miss_data_x[data_mask == 0] = np.nan
     elif miss_modality == 'MAR':
-        data_mask = mar_sampler(data_x, miss_rate, seed)
-        miss_data_x = data_x.copy()
-        miss_data_x[data_mask == 0] = np.nan
+        miss_data_x, data_mask = mar_sampler(data_x, miss_rate, seed)
     elif miss_modality == 'MNAR':
         print('MNAR not yet implemented. Exiting the program.')
         return None
@@ -59,6 +57,7 @@ def data_loader(dataset, miss_rate, miss_modality='MCAR', seed=None):
         print('Invalid miss modality. Exiting the program.')
         return None
 
-    # np.savetxt('test.out', miss_data_x, delimiter=',')
+    # with open("test.out", "w") as f:
+    #     np.savetxt(f, miss_data_x, delimiter=',')
 
     return data_x, miss_data_x, data_mask
