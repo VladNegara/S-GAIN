@@ -49,8 +49,48 @@ def data_loader(dataset, miss_rate, miss_modality='MCAR', seed=None):
         miss_data_x = data_x.copy()
         miss_data_x[data_mask == 0] = np.nan
     elif miss_modality == 'MAR':
-        print('MAR not yet implemented. Exiting the program.')
-        return None
+        N, d = data_x.shape
+
+        # Uniform p_m
+        p_m = np.full((d,), miss_rate)
+
+        m = binary_sampler(1 - miss_rate, N, d, seed)
+
+        if seed: np.random.seed(seed)
+
+        w = np.random.uniform(0., 1., size=d)
+        b = np.random.uniform(0., 1., size=d)
+
+        data_mask = np.ones(shape=(N,d))
+        miss_data_x = data_x.copy()
+
+        for i in range(d):
+            for n in range(N):
+                numerator_exponent = 0
+                for j in range(i):
+                    if data_mask[n][j] == 1:
+                        numerator_exponent += w[j] * miss_data_x[n][j]
+                    else:
+                        numerator_exponent += b[j]
+                
+                denominator = 0
+                for l in range(N):
+                    denominator_exponent = 0
+                    for j in range(i):
+                        if data_mask[l][j] == 1:
+                            denominator_exponent += w[j] * miss_data_x[l][j]
+                        else:
+                            denominator_exponent += b[j]
+                    denominator += np.exp(-denominator_exponent)
+
+                P = p_m[i] * N * np.exp(-numerator_exponent) / denominator
+
+                uniform_random_value = np.random.uniform()
+
+                if uniform_random_value < P:
+                    # The value is missing
+                    data_mask[n][i] = 0
+                    miss_data_x[n][i] = np.nan
     elif miss_modality == 'MNAR':
         print('MNAR not yet implemented. Exiting the program.')
         return None
