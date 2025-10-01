@@ -54,8 +54,6 @@ def data_loader(dataset, miss_rate, miss_modality='MCAR', seed=None):
         # Uniform p_m
         p_m = np.full((d,), miss_rate)
 
-        m = binary_sampler(1 - miss_rate, N, d, seed)
-
         if seed: np.random.seed(seed)
 
         w = np.random.uniform(0., 1., size=d)
