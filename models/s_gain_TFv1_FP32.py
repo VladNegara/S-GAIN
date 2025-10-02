@@ -272,6 +272,11 @@ def s_gain(miss_data_x, batch_size=128, hint_rate=0.9, alpha=100, iterations=100
 
         if monitor: monitor.log_loss(G_loss_curr, D_loss_curr, MSE_loss_curr)
 
+        # Terminate failed imputation immediately
+        if np.isnan(G_loss_curr):
+            if verbose: print('Imputation failed! Terminating...')
+            break
+
     if monitor:
         monitor.log_imputation_time()
 
