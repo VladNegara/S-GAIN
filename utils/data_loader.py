@@ -54,6 +54,14 @@ def data_loader(dataset, miss_rate, miss_modality='MCAR', seed=None):
         # Uniform p_m
         p_m = np.full((d,), miss_rate)
 
+        # Array to memoize sums in exponents in the formula
+        # Cell [n][i] holds the sum over j<i
+        exponent_terms = np.zeros(shape=(N,d+1))
+
+        # Array to memoize the denominator in the formula
+        denominators = np.zeros(shape=(d+1,))
+        denominators[0] = N
+
         if seed: np.random.seed(seed)
 
         w = np.random.uniform(0., 1., size=d)
@@ -64,22 +72,16 @@ def data_loader(dataset, miss_rate, miss_modality='MCAR', seed=None):
 
         for i in range(d):
             for n in range(N):
-                numerator_exponent = 0
-                for j in range(i):
-                    if data_mask[n][j] == 1:
-                        numerator_exponent += w[j] * miss_data_x[n][j]
-                    else:
-                        numerator_exponent += b[j]
+                if data_mask[n][i] == 1:
+                    exponent_terms[n][i+1] = exponent_terms[n][i] + w[i] * miss_data_x[n][i]
+                else:
+                    exponent_terms[n][i+1] = exponent_terms[n][i] + b[i]
                 
-                denominator = 0
-                for l in range(N):
-                    denominator_exponent = 0
-                    for j in range(i):
-                        if data_mask[l][j] == 1:
-                            denominator_exponent += w[j] * miss_data_x[l][j]
-                        else:
-                            denominator_exponent += b[j]
-                    denominator += np.exp(-denominator_exponent)
+                denominators[i+1] += np.exp(-exponent_terms[n][i+1])
+                
+                numerator_exponent = exponent_terms[n][i]
+
+                denominator = denominators[i]
 
                 P = p_m[i] * N * np.exp(-numerator_exponent) / denominator
 
