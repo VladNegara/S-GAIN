@@ -92,8 +92,34 @@ def data_loader(dataset, miss_rate, miss_modality='MCAR', seed=None):
                     data_mask[n][i] = 0
                     miss_data_x[n][i] = np.nan
     elif miss_modality == 'MNAR':
-        print('MNAR not yet implemented. Exiting the program.')
-        return None
+        N, d = data_x.shape
+
+        # Uniform p_m
+        p_m = np.full((d,), miss_rate)
+
+        if seed: np.random.seed(seed)
+
+        w = np.random.uniform(0., 1., size=d)
+
+        # Array to memoize the denominator in the formula
+        denominators = np.zeros(shape=(d,))
+        for i in range(d):
+            for n in range(N):
+                denominators[i] += np.exp(-w[i] * data_x[n][i])
+
+        data_mask = np.ones(shape=(N,d))
+        miss_data_x = data_x.copy()
+
+        for i in range(d):
+            for n in range(N):
+                P = p_m[i] * N * np.exp(-w[i] * data_x[n][i]) / denominators[i]
+
+                uniform_random_value = np.random.uniform()
+
+                if uniform_random_value < P:
+                    # The value is missing
+                    data_mask[n][i] = 0
+                    miss_data_x[n][i] = np.nan
     else:
         print('Invalid miss modality. Exiting the program.')
         return None
