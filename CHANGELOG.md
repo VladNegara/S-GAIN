@@ -18,6 +18,7 @@ Current changes:
 - Implemented auto shutdown for run_experiments.py.
 - Minor improvements to the analysis.
 - Minor improvements to the project structure.
+- Fixed bugs related to calling log_and_graphs.py from main.py or from the README.
 
 ## Pre-release v0.1.2-alpha (11-09-2025)
 
@@ -31,9 +32,9 @@ This version saw major improvements to the analysis:
 
 This version saw a major overhaul of the testing framework:
 - Now specifies all experiment settings for the output files for easy manipulation of data and replication of results.
-- Converted the jupyter notebook to pure python and allow for automatic analysis.
 - Implemented imputation time monitoring.
 - run_experiments.py replaces loop_main.py and solves the issue of TensorFlow not restarting.
+- Converted the jupyter notebook to pure python and allow for automatic analysis.
 - Restructured the project to improve comprehension.
 - Significantly improved README.
 

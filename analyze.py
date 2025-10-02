@@ -50,9 +50,9 @@ def extract_log_info(logs, input_folder='output'):
         # Get imputation time
         it = data['imputation_time']
         it_total = it['total']
-        it_preparation = it['log'][0]
-        it_finalization = it['log'][-1]
-        it_s_gain = it_total - it_preparation - it_finalization
+        it_preparation = it['preparation']
+        it_s_gain = it['s_gain']
+        it_finalization = it['finalization']
 
         # Add experiment to dictionary
         if experiment not in exps:
