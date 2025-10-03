@@ -141,13 +141,22 @@ def save_logs(filepath, experiment=None, directory='temp/exp_bins', sys_info=Non
 
     if sys_info: logs.update({'system_information': sys_info})
 
+    # Log variables
+    it_total = sum(imputation_time)
+    it_preparation = imputation_time[0]
+    it_finalization = imputation_time[-1]
+    it_s_gain = it_total - it_preparation - it_finalization
+
     logs.update({
         'rmse': {
             'final': RMSE[-1],
             'log': RMSE,
         },
         'imputation_time': {
-            'total': sum(imputation_time),
+            'total': it_total,
+            'preparation': it_preparation,
+            's_gain': it_s_gain,
+            'finalization': it_finalization,
             'log': imputation_time
         },
         'memory_usage': {

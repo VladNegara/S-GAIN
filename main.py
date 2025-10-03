@@ -80,6 +80,11 @@ def main(args):
     no_save = args.no_save
     no_system_information = args.no_system_information
 
+    # Remove previous system information file
+    sys_info_filepath = "temp/sys_info.json"
+    if os.path.exists(sys_info_filepath):
+        os.remove(sys_info_filepath)
+
     # Standardization
     def sparsity_modality(sparsity, modality):
         if sparsity == 0 or modality == 'dense':
