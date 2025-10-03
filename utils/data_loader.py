@@ -5,7 +5,7 @@
 
 import numpy as np
 
-from utils.utils import binary_sampler, mar_sampler
+from utils.utils import binary_sampler, mar_sampler, mnar_sampler
 from keras.datasets import mnist, fashion_mnist, cifar10
 
 
@@ -51,13 +51,12 @@ def data_loader(dataset, miss_rate, miss_modality='MCAR', seed=None):
     elif miss_modality == 'MAR':
         miss_data_x, data_mask = mar_sampler(data_x, miss_rate, seed)
     elif miss_modality == 'MNAR':
-        print('MNAR not yet implemented. Exiting the program.')
-        return None
+        miss_data_x, data_mask = mnar_sampler(data_x, miss_rate, seed)
     else:
         print('Invalid miss modality. Exiting the program.')
         return None
 
-    # with open("test.out", "w") as f:
-    #     np.savetxt(f, miss_data_x, delimiter=',')
+    print(np.count_nonzero(np.isnan(miss_data_x), axis=0))
+    # np.savetxt("test", miss_data_x, delimiter=',')
 
     return data_x, miss_data_x, data_mask

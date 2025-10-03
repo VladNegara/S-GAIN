@@ -58,8 +58,8 @@ def mar_sampler(X:np.ndarray, p_m:float, seed=None):
     M = np.ones_like(X, dtype=float)
     
     # Sample weights and biases - use smaller values to prevent extreme probabilities
-    w = np.random.uniform(0, 1, n_features)  # Reduced from 1 to 0.1
-    b = np.random.uniform(0, 1, n_features)  # Reduced from 1 to 0.1
+    w = np.random.uniform(0, 1, n_features)
+    b = np.random.uniform(0, 1, n_features)
     
     # Process each feature sequentially
     for i in range(n_features):
@@ -87,8 +87,6 @@ def mar_sampler(X:np.ndarray, p_m:float, seed=None):
         
         # Sample missingness for all samples at feature i
         for n in range(n_samples):
-            # M[n,i] = 1 means observed, M[n,i] = 0 means missing
-            # We want to sample "is observed?" with probability (1 - prob_missing)
             M[n, i] = 1 - np.random.binomial(1, probs_missing[n])
             
             if M[n, i] == 0:
@@ -96,6 +94,48 @@ def mar_sampler(X:np.ndarray, p_m:float, seed=None):
                 X_missing_std[n, i] = 0
     
     return X_missing, M
+
+def mnar_sampler(X:np.ndarray, p_m:float, seed=None):
+    if seed is not None:
+        np.random.seed(seed)
+    
+    n_samples, n_features = X.shape
+    X_missing = X.copy()
+    
+    # Standardize to prevent numerical overflow/underflow
+    X_mean = np.mean(X, axis=0)
+    X_std = np.std(X, axis=0) + 1e-8
+    X_standardized = (X - X_mean) / X_std
+    
+    M = np.ones_like(X, dtype=float)
+    
+    # Sample weights and biases - use smaller values to prevent extreme probabilities
+    w = np.random.uniform(0, 1, n_features) 
+
+    for i in range(n_features):
+        x_i = X_standardized[:, i]
+        
+        exp_neg_wx = np.exp(-w[i] * x_i)
+        
+        Z = np.sum(exp_neg_wx)
+
+        # Avoid divide by 0
+        if Z == 0:
+            Z = 1e-10
+
+        probs_missing = (p_m * n_samples * exp_neg_wx) / Z
+
+        probs_missing = np.clip(probs_missing, 0, 1)
+
+        for n in range(n_samples):
+            M[n, i] = 1 - np.random.binomial(1, probs_missing[n])
+            
+            if M[n, i] == 0:
+                X_missing[n, i] = np.nan
+    
+    # print(X_missing, M)
+    return X_missing, M
+
 
 def uniform_sampler(low, high, rows, cols):
     """Sample uniform random variables.
