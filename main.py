@@ -269,7 +269,7 @@ if __name__ == '__main__':
         help="don't log system information",
         action='store_true')
     parser.add_argument(
-        '-i' , '--image',
+        '-img' , '--image',
         help="Use an image instead of a dataset",
         action="store_true")
     args = parser.parse_args()
