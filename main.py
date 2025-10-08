@@ -268,6 +268,10 @@ if __name__ == '__main__':
         '-nsi', '--no_system_information',
         help="don't log system information",
         action='store_true')
+    parser.add_argument(
+        '-i' , '--image',
+        help="Use an image instead of a dataset",
+        action="store_true")
     args = parser.parse_args()
 
     main(args)
