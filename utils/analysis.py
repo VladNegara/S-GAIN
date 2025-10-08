@@ -898,7 +898,7 @@ def plot_imputation_time(experiments_info, sys_info=None, save=False, folder='an
 
         if save:
             if verbose: print(f'Saving plot...')
-            path = f'{folder}/{title}_success_rate.pdf'
+            path = f'{folder}/{title}_imputation_time.pdf'
             plt.savefig(path, format='pdf', dpi=1200)
 
         fig.show()
