@@ -58,11 +58,9 @@ def data_loader(dataset, miss_rate, miss_modality='MCAR', seed=None):
         return None
     elif dataset in image_datasets:
         no, dim = data_x.shape
-        print(data_x.shape)
-        # np.savetxt('test', data_x, delimiter=',')
         data_mask = remove_square_image(miss_rate, no, dim, seed)
-        np.savetxt('test', data_mask)
-
+        miss_data_x = data_x.copy()
+        miss_data_x[data_mask == 0] = np.nan
     else:
         print('Invalid miss modality. Exiting the program.')
         return None

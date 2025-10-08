@@ -65,13 +65,13 @@ def remove_square_image(miss_rate, rows, cols, seed):
     mask = []
 
     for _ in range(rows):
-        temp_mask = np.ones((cols**0.5, cols**0.5))
+        size = int(cols**0.5)
+        temp_mask = np.ones((size, size))
+        
+        min_pos = int(miss_rate*size)
 
-        min_pos = int(miss_rate*cols)
-        # min_rows = int(miss_rate*rows)
-
-        max_cols = np.random.randint(min_pos, cols)
-        max_rows = np.random.randint(min_pos, cols)
+        max_cols = np.random.randint(min_pos, size)
+        max_rows = np.random.randint(min_pos, size)
 
         box_start_cols = max_cols - min_pos
         box_start_rows = max_rows - min_pos
@@ -81,7 +81,6 @@ def remove_square_image(miss_rate, rows, cols, seed):
 
     mask_arr = np.array(mask)
     return mask_arr
-
 
 
 
