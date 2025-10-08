@@ -5,7 +5,7 @@
 
 import numpy as np
 
-from utils.utils import binary_sampler
+from utils.utils import binary_sampler, remove_square_image
 from keras.datasets import mnist, fashion_mnist, cifar10
 
 
@@ -25,6 +25,8 @@ def data_loader(dataset, miss_rate, miss_modality='MCAR', seed=None):
     - data_mask: the indicator matrix for missing elements
     """
 
+    image_datasets = ['fashion_mnist', 'cifar10']
+
     # Load the data
     if dataset in ['health', 'letter', 'spam']:
         file_name = f'datasets/{dataset}.csv'
@@ -43,17 +45,24 @@ def data_loader(dataset, miss_rate, miss_modality='MCAR', seed=None):
         return None
 
     # Introduce missing elements in the data
-    if miss_modality == 'MCAR':
+    if miss_modality == 'MCAR' and dataset not in image_datasets:
         no, dim = data_x.shape
         data_mask = binary_sampler(1 - miss_rate, no, dim, seed)
         miss_data_x = data_x.copy()
         miss_data_x[data_mask == 0] = np.nan
-    elif miss_modality == 'MAR':
+    elif miss_modality == 'MAR' and dataset not in image_datasets:
         print('MAR not yet implemented. Exiting the program.')
         return None
-    elif miss_modality == 'MNAR':
+    elif miss_modality == 'MNAR' and dataset not in image_datasets:
         print('MNAR not yet implemented. Exiting the program.')
         return None
+    elif dataset in image_datasets:
+        no, dim = data_x.shape
+        print(data_x.shape)
+        # np.savetxt('test', data_x, delimiter=',')
+        data_mask = remove_square_image(miss_rate, no, dim, seed)
+        np.savetxt('test', data_mask)
+
     else:
         print('Invalid miss modality. Exiting the program.')
         return None
