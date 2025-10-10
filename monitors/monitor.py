@@ -51,7 +51,7 @@ import struct
 from os import makedirs, fsync
 from os.path import isdir
 from shutil import rmtree
-from time import time
+from time import perf_counter
 
 from utils.metrics import get_rmse
 
@@ -118,7 +118,7 @@ class Monitor:
         """
 
         self.f_imputation_time = open(f'{self.directory}/imputation_time.bin', 'ab')
-        self.imputation_time = time()
+        self.imputation_time = perf_counter()
 
         if self.verbose: print('Monitoring imputation time...')
         return True
@@ -228,7 +228,7 @@ class Monitor:
         - step_time: the time (in seconds) between the previous step and now
         """
 
-        current_time = time()
+        current_time = perf_counter()
         step_time = current_time - self.imputation_time
         self.f_imputation_time.write(struct.pack('f', step_time))
         self.imputation_time = current_time

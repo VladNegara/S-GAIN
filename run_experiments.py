@@ -22,7 +22,7 @@ import subprocess
 
 import pandas as pd
 
-from time import time
+from time import perf_counter
 from datetime import timedelta
 
 from utils.load_store import get_experiments, read_bin
@@ -93,36 +93,36 @@ def update_experiments():
 
 if __name__ == '__main__':
     # Get the experiments
-    experiments = update_experiments()
+    exp_commands = update_experiments()
 
     # Report initial progress
     i = 0
-    total = len(experiments)
-    start_time = time()
+    total = len(exp_commands)
+    start_time = perf_counter()
     print(f'\nProgress: 0% completed (0/{total}) 0:00:00\n')
 
     # Run all experiments
-    while len(experiments) > 0:
-        for experiment in experiments:
+    while len(exp_commands) > 0:
+        for exp_command in exp_commands:
             # Run experiment
-            print(experiment)
-            os.system(experiment)
+            print(exp_command)
+            os.system(exp_command)
 
             # Compile logs and plot graphs
-            command = f'python log_and_graphs.py' \
-                      f'{" --no_graph" if no_graph else ""}' \
-                      f'{" --no_system_information" if no_system_information else ""}' \
-                      f'{" --verbose" if verbose else ""}'
+            log_and_graphs_command = f'python log_and_graphs.py' \
+                                     f'{" --no_graph" if no_graph else ""}' \
+                                     f'{" --no_system_information" if no_system_information else ""}' \
+                                     f'{" --verbose" if verbose else ""}'
 
-            if verbose: print(f'\n{command}')
-            if not no_log: os.system(command)
+            if verbose: print(f'\n{log_and_graphs_command}')
+            if not no_log: os.system(log_and_graphs_command)
 
             # Increase counter
             rmse = read_bin('temp/exp_bins/rmse.bin')[-1]
             if ignore_existing_files or not retry_failed_experiments or pd.notna(rmse): i += 1
 
             # Report progress
-            elapsed_time = int(time() - start_time)
+            elapsed_time = int(perf_counter() - start_time)
             time_to_completion = int(elapsed_time / i * (total - i)) if i > 0 else 0
             estimated = f' (estimated left: {timedelta(seconds=time_to_completion)})' if time_to_completion > 0 else ''
             print(f'\nProgress: {int(i / total * 100)}% completed ({i}/{total}) {timedelta(seconds=elapsed_time)}'
@@ -130,7 +130,7 @@ if __name__ == '__main__':
 
         # Update the experiments
         if loop_until_complete and not ignore_existing_files and retry_failed_experiments:
-            experiments = update_experiments()
+            exp_commands = update_experiments()
         else:
             break
 
