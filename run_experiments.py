@@ -109,7 +109,8 @@ if __name__ == '__main__':
             os.system(experiment)
 
             # Compile logs and plot graphs
-            command = f'python log_and_graphs.py{" --no_graph" if no_graph else ""}' \
+            command = f'python log_and_graphs.py' \
+                      f'{" --no_graph" if no_graph else ""}' \
                       f'{" --no_system_information" if no_system_information else ""}' \
                       f'{" --verbose" if verbose else ""}'
 

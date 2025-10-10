@@ -9,7 +9,7 @@ from utils.utils import binary_sampler
 from keras.datasets import mnist, fashion_mnist, cifar10
 
 
-def data_loader(dataset, miss_rate, miss_modality='MCAR', seed=None):
+def data_loader(dataset, miss_rate, miss_modality, seed=None):
     """Load a dataset and introduce missing elements.
 
     Todo: other miss modalities (MAR, MNAR, others for image data?)
@@ -39,13 +39,17 @@ def data_loader(dataset, miss_rate, miss_modality='MCAR', seed=None):
         (data_x, _), _ = cifar10.load_data()
         data_x = np.reshape(np.asarray(data_x), [50000, 32 * 32 * 3]).astype(float)
     else:  # This should not happen
-        print(f'Invalid dataset "{dataset}". Exiting the program.')
+        print(f'Invalid dataset: "{dataset}". Exiting the program.')
         return None
 
     # Introduce missing elements in the data
-    no, dim = data_x.shape
-    data_mask = binary_sampler(1 - miss_rate, no, dim, seed)
-    miss_data_x = data_x.copy()
-    miss_data_x[data_mask == 0] = np.nan
+    if miss_modality == 'MCAR':
+        no, dim = data_x.shape
+        data_mask = binary_sampler(1 - miss_rate, no, dim, seed)
+        miss_data_x = data_x.copy()
+        miss_data_x[data_mask == 0] = np.nan
+    else:  # This should not happen
+        print(f'Invalid miss modality: "{miss_modality}". Exiting the program.')
+        return None
 
     return data_x, miss_data_x, data_mask

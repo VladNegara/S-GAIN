@@ -523,6 +523,6 @@ class Monitor:
             }
         })
 
-        f_model = open(filepath, 'w')
-        f_model.write(model)
-        f_model.close()
+        with open(filepath, 'w') as f:
+            f.write(model)
+            f.close()

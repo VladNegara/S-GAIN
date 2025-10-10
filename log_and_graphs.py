@@ -95,7 +95,7 @@ def save_logs(filepath, experiment=None, directory='temp/exp_bins', sys_info=Non
     """
 
     # Read the log files
-    RMSE = read_bin(f'{directory}/RMSE.bin')
+    RMSE = read_bin(f'{directory}/rmse.bin')
     imputation_time = read_bin(f'{directory}/imputation_time.bin')
     memory_usage = [0]  # read_bin(f'{directory}/memory_usage.bin')
     energy_consumption = []  # read_bin(f'{directory}/energy_consumption.bin')
