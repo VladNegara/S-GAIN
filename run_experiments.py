@@ -45,7 +45,10 @@ Values with Sparse Initialization", IDEAL conference, 2025.
 # discriminator_modalities = ['dense']
 # n_runs = 10
 
-# Settings
+"""
+Settings
+* loop_until_complete only works when: retry_failed_experiments = True and ignore_existing_files = False
+"""
 datasets = ['health', 'fashion_mnist']  # ['spam', 'letter', 'health', 'mnist', 'fashion_mnist', 'cifar10']
 miss_rates = [0.2]
 miss_modalities = ['MCAR']  # ['MCAR', 'MAR', 'MNAR']
@@ -62,7 +65,7 @@ output_folder = 'output'  # Default: 'output'
 n_runs = 5
 ignore_existing_files = False  # Default: False
 retry_failed_experiments = True  # Default: True
-loop_until_complete = True  # Only works when retry_failed_experiments = True and ignore_existing_files = False
+loop_until_complete = True  # Default: True
 verbose = True  # Default: True
 no_log = False  # Default: False
 no_graph = False  # Default: False
@@ -81,13 +84,11 @@ def update_experiments():
     """
 
     return get_experiments(
-        datasets, miss_rates=miss_rates, miss_modalities=miss_modalities, seeds=seeds, batch_sizes=batch_sizes,
-        hint_rates=hint_rates, alphas=alphas, iterations_s=iterations_s, generator_sparsities=generator_sparsities,
-        generator_modalities=generator_modalities, discriminator_sparsities=discriminator_sparsities,
-        discriminator_modalities=discriminator_modalities, folder=output_folder, n_runs=n_runs,
-        ignore_existing_files=ignore_existing_files, retry_failed_experiments=retry_failed_experiments,
-        verbose=verbose, no_log=True, no_graph=True, no_model=no_model, no_save=no_save,
-        no_system_information=no_system_information, get_commands=True
+        datasets, miss_rates, miss_modalities, seeds, batch_sizes, hint_rates, alphas, iterations_s,
+        generator_sparsities, generator_modalities, discriminator_sparsities, discriminator_modalities,
+        folder=output_folder, n_runs=n_runs, ignore_existing_files=ignore_existing_files,
+        retry_failed_experiments=retry_failed_experiments, verbose=verbose, no_log=True, no_graph=True,
+        no_model=no_model, no_save=no_save, no_system_information=no_system_information, get_commands=True
     )
 
 
