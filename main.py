@@ -155,12 +155,12 @@ def main(args):
         f.close()
 
     # Save imputation
-    if not no_save:
+    if not no_save and 'nan' not in filepath_imputed_data:
         if verbose: print('Saving imputation...')
         save_imputation(filepath_imputed_data, imputed_data_x)
 
-    # Save model
-    if not no_model:
+    # Save (trained) model
+    if not no_model and 'nan' not in filepath_model:
         if verbose: print('Saving (trained) model...')
         monitor.save_model(filepath_model)
 

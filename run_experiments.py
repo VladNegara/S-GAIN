@@ -135,8 +135,10 @@ if __name__ == '__main__':
         else:
             break
 
+    # Analyze experiments
     if analyze: os.system(f'python analyze.py --all -in {output_folder} -out {analysis_folder} --save --verbose')
 
+    # Auto shutdown
     if auto_shutdown and total > 0:
         if verbose: print(f'Processes finished.\nShutting down...')
         subprocess.run(['shutdown', '-s'])
