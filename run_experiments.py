@@ -62,19 +62,19 @@ generator_modalities = ['dense', 'random']  # ['dense', 'random', 'ER', 'ERRW']
 discriminator_sparsities = [0, 0.2, 0.4, 0.6, 0.8]
 discriminator_modalities = ['dense', 'random']  # ['dense', 'random', 'ER', 'ERRW']
 output_folder = 'output'  # Default: 'output'
-n_runs = 5
-ignore_existing_files = False  # Default: False
-retry_failed_experiments = True  # Default: True
-loop_until_complete = True  # Default: True
+n_runs = 10
+ignore_existing_files = False
+retry_failed_experiments = True
+loop_until_complete = True
 verbose = True  # Default: True
 no_log = False  # Default: False
 no_graph = False  # Default: False
 no_model = False  # Default: False
 no_save = False  # Default: False
 no_system_information = False  # Default: False
-analyze = True  # Automatically analyze the experiments after completion
+analyze = True
 analysis_folder = 'analysis'  # Default: 'analysis'
-auto_shutdown = True  # Default: False
+auto_shutdown = True
 
 
 def update_experiments():
