@@ -240,9 +240,9 @@ def parse_log(filepath_log):
     """
 
     # Read the log file
-    f_log = open(filepath_log, 'r')
-    log = json.loads(f_log.read())
-    f_log.close()
+    with open(filepath_log, 'r') as f:
+        log = json.loads(f.read())
+        f.close()
 
     # Retrieve the logs
     RMSE = log['rmse']['log']
@@ -417,9 +417,9 @@ def read_bin(filepath):
     """
 
     # Read binary data
-    file = open(filepath, 'rb')
-    data = file.read()
-    file.close()
+    with open(filepath, 'rb') as f:
+        data = f.read()
+        f.close()
 
     # Unpack the data
     fmt = '<%df' % (len(data) // 4)
@@ -442,9 +442,9 @@ def system_information(directory='temp', print_ready=False):
 
     # Load system information
     if isfile(filepath):
-        f = open(filepath, 'r')
-        sys_info = json.load(f)
-        f.close()
+        with open(filepath, 'r') as f:
+            sys_info = json.load(f)
+            f.close()
 
     # Get and store system information
     else:
@@ -504,9 +504,9 @@ def system_information(directory='temp', print_ready=False):
 
         # Store the system information
         if not isdir(directory): makedirs(directory)
-        f = open(filepath, 'w')
-        f.write(json.dumps(sys_info))
-        f.close()
+        with open(filepath, 'w') as f:
+            f.write(json.dumps(sys_info))
+            f.close()
 
     # Convert dictionary to print ready strings
     if print_ready:
