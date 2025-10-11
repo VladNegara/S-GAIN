@@ -94,7 +94,8 @@ def main(args):
             return sparsity, 'ERRW'
         elif modality in ('erkrw', 'erdos_renyi_kernel_random_weight'):
             return sparsity, 'ERKRW'
-        return None
+        else:
+            return None
 
     generator_sparsity, generator_modality = sparsity_modality(generator_sparsity, generator_modality)
     discriminator_sparsity, discriminator_modality = sparsity_modality(discriminator_sparsity, discriminator_modality)

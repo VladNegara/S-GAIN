@@ -194,11 +194,22 @@ computer after wards.
 
 - **utils:** Contains different utility files.
 - **utils/flops:** Contains code to calculate FLOPs. (copied from Google Research)
+- **utils/inits:** Contains files for initialization strategies.
+- **utils/inits/s_gain_TFv2_INT8.py:** Contains all the different initialization strategies for the s_gain_TFv2_INT8
+  version.
+- **utils/inits/s_gain_TFv1_FP32.py:** Contains all the different initialization strategies for the s_gain_TFv1_FP32
+  version.
+- **utils/pruners:** Contains files for pruning strategies.
+- **utils/pruners/s_gain_TFv2_INT8.py:** Contains all the different pruning strategies for the s_gain_TFv2_INT8 version.
+- **utils/pruners/s_gain_TFv1_FP32.py:** Contains all the different pruning strategies for the s_gain_TFv1_FP32 version.
+- **utils/regrowers:** Contains files for regrowing strategies.
+- **utils/regrowers/s_gain_TFv2_INT8.py:** Contains all the different regrowing strategies for the s_gain_TFv2_INT8
+  version.
+- **utils/regrowers/s_gain_TFv1_FP32.py:** Contains all the different regrowing strategies for the s_gain_TFv1_FP32
+  version.
 - **utils/analysis.py:** Contains functions to analyze the experiments.
-- **utils/data_loader.py:** Loads the datasets.
+- **utils/data_loader.py:** Loads the datasets and introduces missingness in the data.
 - **utils/graphs2.py:** An updated version of graphs.py: Plot all the relevant graphs to the same file.
-- **utils/inits_TFv2_INT8.py:** Contains all the different initialization strategies for the TFv2_INT8 version.
-- **utils/inits_TFv1_FP32.py:** Contains all the different initialization strategies for the TFv1_FP32 version.
 - **utils/load_store.py:** Loads and stores files.
 - **utils/metrics.py:** Calculates all the relevant metrics.
 - **utils/utils.py:** Contains other utilities.
