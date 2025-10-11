@@ -212,6 +212,11 @@ additional settings not already explained in prior sections:
   version.
 - **utils/inits/s_gain_TFv1_FP32.py:** Contains all the different initialization strategies for the s_gain_TFv1_FP32
   version.
+- **modes:** Contains files for advanced training strategies (modalities).
+- **utils/modes/s_gain_TFv2_INT8.py:** Contains all the different advanced training strategies (modalities) for the
+  s_gain_TFv2_INT8 version.
+- **utils/modes/s_gain_TFv1_FP32.py:** Contains all the different advanced training strategies (modalities) for the
+  s_gain_TFv1_FP32 version.
 - **utils/pruners:** Contains files for pruning strategies.
 - **utils/pruners/s_gain_TFv2_INT8.py:** Contains all the different pruning strategies for the s_gain_TFv2_INT8 version.
 - **utils/pruners/s_gain_TFv1_FP32.py:** Contains all the different pruning strategies for the s_gain_TFv1_FP32 version.
