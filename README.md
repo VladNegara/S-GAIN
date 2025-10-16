@@ -47,7 +47,7 @@ automatically analyze them and if needed shutdown the computer after wards.
 
 - **dataset:** the dataset to use [spam, letter, health, mnist, fashion_mnist, cifar10]
 - **miss_rate:** the probability of missing elements in the data (default: 0.2)
-- **miss_modality:** the modality of missing data [MCAR, MAR, MNAR] (default: MCAR)
+- **miss_modality:** the modality of missing data [MCAR, MAR, MNAR] (default: 'MCAR')
 - **seed:** the seed used to introduce missing elements in the data (optional)
 
 ####
@@ -58,13 +58,13 @@ automatically analyze them and if needed shutdown the computer after wards.
 - **iterations (epochs):** the number of training iterations (epochs) (default: 10000)
 - **generator_sparsity:** the probability of sparsity in the generator (default: 0)
 - **generator_modality:** the initialization and pruning and regrowth strategy of the generator [dense, random,
-  erdos_renyi, ERRW] (default: dense)
+  erdos_renyi, ERRW] (default: 'dense')
 - **discriminator_sparsity:** the probability of sparsity in the discriminator (default: 0)
-- **discriminator_modality:** the initialization and pruning and regrowth strategy of the discriminator (default: dense)
+- **discriminator_modality:** the initialization and pruning and regrowth strategy of the discriminator (default: 'dense')
 
 ####
 
-- **folder (directory):** save the imputed data to a different folder (optional) [default: output]
+- **folder (directory):** save the imputed data to a different folder (optional, default: 'output')
 - **verbose:** enable verbose logging
 - **no_log:** turn off the logging of metrics (also disables graphs)
 - **no_graph:** don't plot graphs after training
@@ -107,7 +107,7 @@ $ python main.py spam --verbose --no_log --no_graph --no_model --no_save --no_sy
 
 ### Log and graphs
 
-- **directory:** the directory of the temporary files
+- **folder (directory):** the directory of the temporary files
 - **no_graph:** don't plot the graphs (log only)
 - **no_system_information:** don't log system information
 - **verbose:** enable verbose logging
@@ -125,8 +125,8 @@ $ python log_and_graphs.py --verbose
 - **success_rate:** plot the success rate graphs
 - **imputation_time:** plot the imputation time graphs
 - **save:** save the analysis
-- **input (experiments):** the folder where the experiments were saved to (optional, default: output)
-- **output (analysis):** save the analysis to a different folder (optional, default: analysis)
+- **input (experiments):** the folder where the experiments were saved to (optional, default: 'output')
+- **output (analysis):** save the analysis to a different folder (optional, default: 'analysis')
 - **no_system_information:** don't log system information
 - **verbose:** enable verbose logging
 
@@ -142,7 +142,20 @@ $ python analyze.py --all --save --experiments output --analysis analysis --verb
 ### Run_experiments
 
 One may use this file to run multiple experiments in sequence, automatically analyze them and if needed shutdown the
-computer after wards.
+computer after wards (if no experiments will be run; auto_shutdown is ignored). The settings are given as lists.
+run_experiments.py will run all possible combinations of these settings for n_runs times. Nonsense is ignored, i.e.
+dense initialization with > 0% sparsity and non-dense initializations with 0% sparsity won't be run. Below you find
+additional settings not already explained in prior sections:
+
+- **n_runs:** the amount of times each experiment should be performed (default: 10)
+- **ignore_existing_files:** ignore the existing files in the output folder (disables loop_until_complete, default:
+  False)
+- **retry_failed_experiments:** retry the failed experiments (enables loop_until_complete, default: True)
+- **loop_until_complete:** loop until each experiment successfully completes n_runs times (default: True)
+- **analyze:** automatically analyze all the experiments after completion (default: True)
+- **analysis_folder:** the output folder of the analysis (default: 'analysis')
+- **auto_shutdown:** automatically shutdown the computer after running the experiments and performing the analysis
+  (default: False)
 
 
 ---
@@ -194,11 +207,27 @@ computer after wards.
 
 - **utils:** Contains different utility files.
 - **utils/flops:** Contains code to calculate FLOPs. (copied from Google Research)
+- **utils/inits:** Contains files for initialization strategies.
+- **utils/inits/s_gain_TFv2_INT8.py:** Contains all the different initialization strategies for the s_gain_TFv2_INT8
+  version.
+- **utils/inits/s_gain_TFv1_FP32.py:** Contains all the different initialization strategies for the s_gain_TFv1_FP32
+  version.
+- **modes:** Contains files for advanced training strategies (modalities).
+- **utils/modes/s_gain_TFv2_INT8.py:** Contains all the different advanced training strategies (modalities) for the
+  s_gain_TFv2_INT8 version.
+- **utils/modes/s_gain_TFv1_FP32.py:** Contains all the different advanced training strategies (modalities) for the
+  s_gain_TFv1_FP32 version.
+- **utils/pruners:** Contains files for pruning strategies.
+- **utils/pruners/s_gain_TFv2_INT8.py:** Contains all the different pruning strategies for the s_gain_TFv2_INT8 version.
+- **utils/pruners/s_gain_TFv1_FP32.py:** Contains all the different pruning strategies for the s_gain_TFv1_FP32 version.
+- **utils/regrowers:** Contains files for regrowing strategies.
+- **utils/regrowers/s_gain_TFv2_INT8.py:** Contains all the different regrowing strategies for the s_gain_TFv2_INT8
+  version.
+- **utils/regrowers/s_gain_TFv1_FP32.py:** Contains all the different regrowing strategies for the s_gain_TFv1_FP32
+  version.
 - **utils/analysis.py:** Contains functions to analyze the experiments.
-- **utils/data_loader.py:** Loads the datasets.
+- **utils/data_loader.py:** Loads the datasets and introduces missingness in the data.
 - **utils/graphs2.py:** An updated version of graphs.py: Plot all the relevant graphs to the same file.
-- **utils/inits_TFv2_INT8.py:** Contains all the different initialization strategies for the TFv2_INT8 version.
-- **utils/inits_TFv1_FP32.py:** Contains all the different initialization strategies for the TFv1_FP32 version.
 - **utils/load_store.py:** Loads and stores files.
 - **utils/metrics.py:** Calculates all the relevant metrics.
 - **utils/utils.py:** Contains other utilities.

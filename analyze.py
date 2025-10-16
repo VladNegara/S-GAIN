@@ -43,9 +43,9 @@ def extract_log_info(logs, input_folder='output'):
         experiment = (d, mr, mm, s, bs, hr, a, i, gs, gm, ds, dm)
 
         # Read the log
-        f = open(f'{input_folder}/{log}', 'r')
-        data = json.load(f)
-        f.close()
+        with open(f'{input_folder}/{log}', 'r') as f:
+            data = json.load(f)
+            f.close()
 
         # Get imputation time
         it = data['imputation_time']
