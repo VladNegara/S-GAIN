@@ -99,7 +99,8 @@ def main(args):
             return sparsity, 'ERRW'
         elif modality in ('erkrw', 'erdos_renyi_kernel_random_weight'):
             return sparsity, 'ERKRW'
-        return None
+        else:
+            return None
 
     generator_sparsity, generator_modality = sparsity_modality(generator_sparsity, generator_modality)
     discriminator_sparsity, discriminator_modality = sparsity_modality(discriminator_sparsity, discriminator_modality)
@@ -108,7 +109,7 @@ def main(args):
 
     # Exit program if a modality is not implemented yet Todo: implement the modalities
     not_implemented = ['MAR', 'MNAR', 'ERK', 'erdos_renyi_kernel', 'ERKRW', 'erdos_renyi_kernel_random_weight', 'SNIP',
-                       'GRASP', 'RSensitivity']
+                       'GraSP', 'RSensitivity']
     if miss_modality in not_implemented:
         print(f'Miss modality {miss_modality} is not implemented. Exiting program...')
         return None
@@ -131,8 +132,10 @@ def main(args):
     # Load the data with missing elements
     data_x, miss_data_x, data_mask = data_loader(dataset, miss_rate, miss_modality, seed)
 
-    # S-GAIN
+    # Initialize monitor
     monitor = None if no_log and no_model else Monitor(data_x, data_mask, experiment=experiment, verbose=verbose)
+
+    # S-GAIN
     imputed_data_x = s_gain(
         miss_data_x, batch_size=batch_size, hint_rate=hint_rate, alpha=alpha, iterations=iterations,
         generator_sparsity=generator_sparsity, generator_modality=generator_modality,
@@ -144,25 +147,35 @@ def main(args):
     rmse = get_rmse(data_x, imputed_data_x, data_mask, round=True)
     if verbose: print(f'RMSE: {rmse}')
 
-    # Save the imputation, the logs and the (trained) model, and plot the graphs
+    # Get filepaths and store to run log_and_graphs.py later
     filepath_imputed_data, filepath_log, filepath_model, filepath_graphs = get_filepaths(folder, experiment, rmse)
+    with open('temp/run_data', 'w') as f:
+        f.write(
+            f'{experiment}\n'
+            f'{filepath_imputed_data}\n'
+            f'{filepath_log}\n'
+            f'{filepath_graphs}\n'
+            f'{filepath_model}'
+        )
+        f.close()
 
-    if not no_save:
+    # Save imputation
+    if not no_save and 'nan' not in filepath_imputed_data:
         if verbose: print('Saving imputation...')
         save_imputation(filepath_imputed_data, imputed_data_x)
 
-    # Store data to run log_and_graphs.py later
-    f = open('temp/run_data', 'w')
-    f.write(f'{experiment}\n{filepath_imputed_data}\n{filepath_log}\n{filepath_graphs}\n{filepath_model}')
-    f.close()
-
-    if not no_log: os.system(f'python log_and_graphs.py{" --no_graph" if no_graph else ""}'
-                             f'{" --no_system_information" if no_system_information else ""}'
-                             f'{" --verbose" if verbose else ""}')
-
-    if not no_model:
+    # Save (trained) model
+    if not no_model and 'nan' not in filepath_model:
         if verbose: print('Saving (trained) model...')
         monitor.save_model(filepath_model)
+
+    # Run log_and_graphs.py
+    if not no_log: os.system(
+        f'python log_and_graphs.py'
+        f'{" --no_graph" if no_graph else ""}'
+        f'{" --no_system_information" if no_system_information else ""}'
+        f'{" --verbose" if verbose else ""}'
+    )
 
     if verbose: print(f'Finished.')
 
