@@ -124,12 +124,12 @@ def data_loader(dataset, miss_rate, miss_modality='MCAR', seed=None):
         print('Invalid miss modality. Exiting the program.')
         return None
     
-    actual_missing_rates = np.count_nonzero(np.isnan(miss_data_x), axis=0) / N
+    # actual_missing_rates = np.count_nonzero(np.isnan(miss_data_x), axis=0) / N
 
-    print('Missing rates per column:')
-    print(actual_missing_rates)
-    print(f'Average missing rate: {actual_missing_rates.mean()}')
+    # print('Missing rates per column:')
+    # print(actual_missing_rates)
+    # print(f'Average missing rate: {actual_missing_rates.mean()}')
 
-    np.savetxt("temp/miss_data.csv", miss_data_x, delimiter=',')
+    # np.savetxt("temp/miss_data.csv", miss_data_x, delimiter=',')
 
     return data_x, miss_data_x, data_mask
