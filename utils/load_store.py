@@ -39,7 +39,7 @@ from os.path import isdir, isfile
 
 
 def get_filepaths(directory, experiment, rmse):
-    """Create the necessary directory and return the appropriate filepaths
+    """Create the necessary directory and return the appropriate filepaths.
 
     :param directory: the directory to save to
     :param experiment: the name of the experiment
@@ -117,7 +117,7 @@ def parse_experiment(experiment, file=False):
     - discriminator_modality: the initialization and pruning and regrowth strategy of the discriminator
     - rmse: the RMSE (if parsing a file)
     - index: the index of the experiment (if parsing a file)
-    - filetype: the type of file (imputed_data, log, model, etc.)
+    - filetype: the type of file (imputed_data, log, model or graphs)
     """
 
     # Check if the experiment belongs to S-GAIN
@@ -175,6 +175,7 @@ def parse_experiment(experiment, file=False):
 
         return dataset, miss_rate, miss_modality, seed, batch_size, hint_rate, alpha, iterations, generator_sparsity, \
             generator_modality, discriminator_sparsity, discriminator_modality, rmse, index, filetype
+
     else:
         discriminator_modality = rest
 
@@ -197,13 +198,14 @@ def parse_files(files=None, filepath='output', filetype=None):
         else [parse_experiment(file, file=True) for file in listdir(filepath)] if isdir(filepath) \
         else []
 
-    # Remove files that don't belong to S-GAIN
+    # Remove files that don't belong to S-GAIN (parse_experiment returns False for non S-GAIN files)
     files = [file for file in files if file]
 
     header = ['dataset', 'miss_rate', 'miss_modality', 'seed', 'batch_size', 'hint_rate', 'alpha', 'iterations',
               'generator_sparsity', 'generator_modality', 'discriminator_sparsity', 'discriminator_modality', 'rmse',
               'index', 'filetype']
 
+    # Only keep selected filetype
     if filetype: files = [file for file in files if file[-1] == filetype]
 
     df_files = pd.DataFrame(files, columns=header)
@@ -238,9 +240,9 @@ def parse_log(filepath_log):
     """
 
     # Read the log file
-    f_log = open(filepath_log, 'r')
-    log = json.loads(f_log.read())
-    f_log.close()
+    with open(filepath_log, 'r') as f:
+        log = json.loads(f.read())
+        f.close()
 
     # Retrieve the logs
     RMSE = log['rmse']['log']
@@ -268,13 +270,12 @@ def parse_log(filepath_log):
         FLOPs_D, loss_G, loss_D, loss_MSE
 
 
-def get_experiments(datasets, miss_rates=None, miss_modalities=None, seeds=None, batch_sizes=None, hint_rates=None,
-                    alphas=None, iterations_s=None, generator_sparsities=None, generator_modalities=None,
-                    discriminator_sparsities=None, discriminator_modalities=None, folder='output', n_runs=10,
-                    ignore_existing_files=False, retry_failed_experiments=True, include=None, exclude=None,
-                    verbose=False, no_log=False, no_graph=False, no_model=False, no_save=False,
-                    no_system_information=False, get_commands=False):
-    """Get a dictionary (or a list of strings) of the experiments to run.
+def get_experiments(datasets, miss_rates, miss_modalities, seeds, batch_sizes, hint_rates, alphas, iterations_s,
+                    generator_sparsities, generator_modalities, discriminator_sparsities, discriminator_modalities,
+                    folder='output', n_runs=10, ignore_existing_files=False, retry_failed_experiments=True,
+                    include=None, exclude=None, verbose=False, no_log=False, no_graph=False, no_model=False,
+                    no_save=False, no_system_information=False, get_commands=False):
+    """Get a dictionary (or a list of commands) of the experiments to run.
 
     :param datasets: which datasets to use
     :param miss_rates: the probabilities of missing elements in the data
@@ -303,21 +304,8 @@ def get_experiments(datasets, miss_rates=None, miss_modalities=None, seeds=None,
     :param get_commands: get a list of ready to run commands instead of a dictionary
 
     :return:
-    - experiments: a dictionary (or a list of strings) of the experiments to run
+    - experiments: a dictionary (or a list of commands) of the experiments to run
     """
-
-    # Default values (as used in the Sparse GAIN paper)
-    if miss_rates is None: miss_rates = [0.2]
-    if miss_modalities is None: miss_modalities = ['MCAR']
-    if seeds is None: seeds = [0]
-    if batch_sizes is None: batch_sizes = [128]
-    if hint_rates is None: hint_rates = [0.9]
-    if alphas is None: alphas = [100]
-    if iterations_s is None: iterations_s = [10000]
-    if generator_sparsities is None: generator_sparsities = [0, 0.6, 0.8, 0.9, 0.95, 0.99]
-    if generator_modalities is None: generator_modalities = ['dense', 'random', 'ER', 'ERRW']
-    if discriminator_sparsities is None: discriminator_sparsities = [0]
-    if discriminator_modalities is None: discriminator_modalities = ['dense']
 
     # Standardization
     def sparsities_modalities(sparsities, modalities):
@@ -429,9 +417,9 @@ def read_bin(filepath):
     """
 
     # Read binary data
-    file = open(filepath, 'rb')
-    data = file.read()
-    file.close()
+    with open(filepath, 'rb') as f:
+        data = f.read()
+        f.close()
 
     # Unpack the data
     fmt = '<%df' % (len(data) // 4)
@@ -454,9 +442,9 @@ def system_information(directory='temp', print_ready=False):
 
     # Load system information
     if isfile(filepath):
-        f = open(filepath, 'r')
-        sys_info = json.load(f)
-        f.close()
+        with open(filepath, 'r') as f:
+            sys_info = json.load(f)
+            f.close()
 
     # Get and store system information
     else:
@@ -516,9 +504,9 @@ def system_information(directory='temp', print_ready=False):
 
         # Store the system information
         if not isdir(directory): makedirs(directory)
-        f = open(filepath, 'w')
-        f.write(json.dumps(sys_info))
-        f.close()
+        with open(filepath, 'w') as f:
+            f.write(json.dumps(sys_info))
+            f.close()
 
     # Convert dictionary to print ready strings
     if print_ready:

@@ -394,13 +394,13 @@ def compile_metrics(experiments, experiments_info, save=False, folder='analysis'
                              & (exps['seed'] == s) & (exps['batch_size'] == bs) & (exps['hint_rate'] == hr)
                              & (exps['alpha'] == a) & (exps['iterations'] == i)]
 
-            exps.loc[match.index, 'imputation_time_improvement_total'] \
+            if isinstance(dense_itit, float): exps.loc[match.index, 'imputation_time_improvement_total'] \
                 = 1 / (match['imputation_time_mean_total'] / dense_itit) - 1
-            exps.loc[match.index, 'imputation_time_improvement_preparation'] \
+            if isinstance(dense_itip, float): exps.loc[match.index, 'imputation_time_improvement_preparation'] \
                 = 1 / (match['imputation_time_mean_preparation'] / dense_itip) - 1
-            exps.loc[match.index, 'imputation_time_improvement_s_gain'] \
+            if isinstance(dense_itis, float): exps.loc[match.index, 'imputation_time_improvement_s_gain'] \
                 = 1 / (match['imputation_time_mean_s_gain'] / dense_itis) - 1
-            exps.loc[match.index, 'imputation_time_improvement_finalization'] \
+            if isinstance(dense_itif, float): exps.loc[match.index, 'imputation_time_improvement_finalization'] \
                 = 1 / (match['imputation_time_mean_finalization'] / dense_itif) - 1
 
         # Rounding
@@ -898,7 +898,7 @@ def plot_imputation_time(experiments_info, sys_info=None, save=False, folder='an
 
         if save:
             if verbose: print(f'Saving plot...')
-            path = f'{folder}/{title}_success_rate.pdf'
+            path = f'{folder}/{title}_imputation_time.pdf'
             plt.savefig(path, format='pdf', dpi=1200)
 
         fig.show()
