@@ -25,56 +25,9 @@ import pandas as pd
 from time import perf_counter
 from datetime import timedelta
 
+from config import *
+
 from utils.load_store import get_experiments, read_bin
-
-"""
-Settings used for B.P. van Oers, I. Baysal Erez, M. van Keulen, "Sparse GAIN: Imputation Methods to Handle Missing
-Values with Sparse Initialization", IDEAL conference, 2025.
-"""
-# datasets = ['spam', 'letter', 'health', 'fashion_mnist']
-# miss_rates = [0.2]
-# miss_modalities = ['MCAR']
-# seeds = [0]
-# batch_sizes = [128]
-# hint_rates = [0.9]
-# alphas = [100]
-# iterations_s = [10000]
-# generator_sparsities = [0, 0.6, 0.8, 0.9, 0.95, 0.99]
-# generator_modalities = ['dense', 'random', 'ER', 'ERRW']
-# discriminator_sparsities = [0]
-# discriminator_modalities = ['dense']
-# n_runs = 10
-
-"""
-Settings
-* loop_until_complete only works when: retry_failed_experiments = True and ignore_existing_files = False
-"""
-datasets = ['health', 'fashion_mnist']  # ['spam', 'letter', 'health', 'mnist', 'fashion_mnist', 'cifar10']
-miss_rates = [0.2]
-miss_modalities = ['MCAR']  # ['MCAR', 'MAR', 'MNAR']
-seeds = [0]
-batch_sizes = [128]
-hint_rates = [0.9]
-alphas = [100]
-iterations_s = [10000]
-generator_sparsities = [0, 0.6, 0.8, 0.9, 0.95, 0.99]
-generator_modalities = ['dense', 'random']  # ['dense', 'random', 'ER', 'ERRW']
-discriminator_sparsities = [0, 0.2, 0.4, 0.6, 0.8]
-discriminator_modalities = ['dense', 'random']  # ['dense', 'random', 'ER', 'ERRW']
-output_folder = 'output'  # Default: 'output'
-n_runs = 10
-ignore_existing_files = False
-retry_failed_experiments = True
-loop_until_complete = True
-verbose = True  # Default: True
-no_log = False  # Default: False
-no_graph = False  # Default: False
-no_model = False  # Default: False
-no_save = False  # Default: False
-no_system_information = False  # Default: False
-analyze = True
-analysis_folder = 'analysis'  # Default: 'analysis'
-auto_shutdown = True
 
 
 def update_experiments():
@@ -84,37 +37,36 @@ def update_experiments():
     """
 
     return get_experiments(
-        datasets, miss_rates, miss_modalities, seeds, batch_sizes, hint_rates, alphas, iterations_s,
-        generator_sparsities, generator_modalities, discriminator_sparsities, discriminator_modalities,
-        folder=output_folder, n_runs=n_runs, ignore_existing_files=ignore_existing_files,
-        retry_failed_experiments=retry_failed_experiments, verbose=verbose, no_log=True, no_graph=True,
-        no_model=no_model, no_save=no_save, no_system_information=no_system_information, get_commands=True
+        dataset, miss_rate, miss_modality, seed, batch_size, hint_rate, alpha, iterations, generator_sparsity,
+        generator_initialization, discriminator_sparsity, discriminator_initialization, folder=output_folder,
+        n_runs=n_runs, ignore_existing_files=ignore_existing_files, retry_failed_experiments=retry_failed_experiments,
+        verbose=verbose, no_log=True, no_graph=True, no_model=no_model, no_save=no_save,
+        no_system_information=no_system_information, get_commands=True
     )
 
 
 if __name__ == '__main__':
-    # Get the experiments
-    exp_commands = update_experiments()
+    # Get the experiment (and log_and_graphs) commands
+    experiment_commands = update_experiments()
+    log_and_graphs_command = f'python log_and_graphs.py' \
+                             f'{" --no_graph" if no_graph else ""}' \
+                             f'{" --no_system_information" if no_system_information else ""}' \
+                             f'{" --verbose" if verbose else ""}'
 
     # Report initial progress
     i = 0
-    total = len(exp_commands)
+    total = len(experiment_commands)
     start_time = perf_counter()
     print(f'\nProgress: 0% completed (0/{total}) 0:00:00\n')
 
     # Run all experiments
-    while len(exp_commands) > 0:
-        for exp_command in exp_commands:
+    while len(experiment_commands) > 0:
+        for experiment_command in experiment_commands:
             # Run experiment
-            print(exp_command)
-            os.system(exp_command)
+            print(experiment_command)
+            os.system(experiment_command)
 
             # Compile logs and plot graphs
-            log_and_graphs_command = f'python log_and_graphs.py' \
-                                     f'{" --no_graph" if no_graph else ""}' \
-                                     f'{" --no_system_information" if no_system_information else ""}' \
-                                     f'{" --verbose" if verbose else ""}'
-
             if verbose: print(f'\n{log_and_graphs_command}')
             if not no_log: os.system(log_and_graphs_command)
 
@@ -131,12 +83,13 @@ if __name__ == '__main__':
 
         # Update the experiments
         if loop_until_complete and not ignore_existing_files and retry_failed_experiments:
-            exp_commands = update_experiments()
+            experiment_commands = update_experiments()
         else:
             break
 
     # Analyze experiments
-    if analyze: os.system(f'python analyze.py --all -in {output_folder} -out {analysis_folder} --save --verbose')
+    if perform_analysis: os.system(f'python analyze.py --all -in {output_folder} -out {analysis_folder} --save'
+                                   f'{" --verbose" if verbose else ""}')
 
     # Auto shutdown
     if auto_shutdown and total > 0:
