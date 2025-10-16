@@ -68,7 +68,7 @@ def remove_square_image(miss_rate, rows, cols, seed):
         size = int(cols**0.5)
         temp_mask = np.ones((size, size))
         
-        min_pos = int(miss_rate*size)
+        min_pos = int((miss_rate*size*size)**0.5)
 
         max_cols = np.random.randint(min_pos, size)
         max_rows = np.random.randint(min_pos, size)
@@ -81,8 +81,6 @@ def remove_square_image(miss_rate, rows, cols, seed):
 
     mask_arr = np.array(mask)
     return mask_arr
-
-
 
 def sample_batch_index(total, batch_size):
     """Sample index of the mini-batch.
