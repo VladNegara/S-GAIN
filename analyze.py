@@ -16,12 +16,14 @@
 """Analyze the experiments:
 
 (1) extract_log_info: extract information from the experiment logs
+(2) analyze: compile the metrics and plot the graphs
 """
 
-import argparse
 import json
 
 from os import listdir
+
+from config import *
 
 from utils.load_store import parse_files, system_information, parse_experiment
 from utils.analysis import compile_metrics, plot_rmse, plot_success_rate, plot_imputation_time
@@ -74,34 +76,12 @@ def extract_log_info(logs, input_folder='output'):
     return exps
 
 
-def main(args):
-    """Compile the metrics and plot the graphs.
-
-    :param args:
-    - all: plot all graphs
-    - rmse: plot the RMSE
-    - success_rate: plot the success rate
-    - save: save the plots
-    - input: the folder the experiments were saved to
-    - output: the folder to save the analysis to
-    - no_system_information: don't log system information
-    - verbose: enable verbose output to console
-    """
-
-    # Get the parameters
-    plot_all = args.all
-    rmse = args.rmse
-    success_rate = args.success_rate
-    imputation_time = args.imputation_time
-    save = args.save
-    input_folder = args.input
-    output_folder = args.output
-    no_system_information = args.no_system_information
-    verbose = args.verbose
+def analyze():
+    """Compile the metrics and plot the graphs."""
 
     # Get all log files
     if verbose: print('Loading experiments...')
-    logs = [file for file in listdir(input_folder) if file.endswith('log.json')]
+    logs = [file for file in listdir(output_folder) if file.endswith('log.json')]
     experiments = parse_files(logs)
     sys_info = system_information(print_ready=True) if not no_system_information else None
 
@@ -109,70 +89,19 @@ def main(args):
     logs = [file for file in logs if 'nan' not in file]
 
     # Get experiments info
-    experiments_info = extract_log_info(logs, input_folder=input_folder)
+    experiments_info = extract_log_info(logs, input_folder=output_folder)
 
     # Analyze (non-compiled) experiments
     if verbose: print('Analyzing experiments...')
-    compile_metrics(experiments, experiments_info=experiments_info, save=save, folder=output_folder, verbose=verbose)
-
-    if verbose: print('Plotting RMSE graphs...')
-    if plot_all or rmse: plot_rmse(experiments, sys_info=sys_info, save=save, folder=output_folder, verbose=verbose)
-
-    if verbose: print('Plotting success rate graphs...')
-    if plot_all or success_rate: plot_success_rate(experiments, sys_info=sys_info, save=save, folder=output_folder,
-                                                   verbose=verbose)
+    if compile_metrics: compile_metrics(experiments, experiments_info=experiments_info, folder=analysis_folder,
+                                        verbose=verbose)
+    if plot_rmse: plot_rmse(experiments, sys_info=sys_info, folder=analysis_folder, verbose=verbose)
+    if plot_success_rate: plot_success_rate(experiments, sys_info=sys_info,folder=analysis_folder, verbose=verbose)
 
     # Analyze experiments information
-    if verbose: print('Plotting imputation time graphs...')
-    if plot_all or imputation_time: plot_imputation_time(experiments_info, sys_info=sys_info, save=save,
-                                                         folder=output_folder, verbose=verbose)
+    if plot_imputation_time: plot_imputation_time(experiments_info, sys_info=sys_info, folder=analysis_folder,
+                                                  verbose=verbose)
 
     # Todo the rest of the analysis
 
     if verbose: print(f'Finished.')
-
-
-if __name__ == '__main__':
-    # Inputs for the analysis function
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        '-a', '--all',
-        help="plot all the graphs",
-        action='store_true')
-    parser.add_argument(
-        '-rmse', '--rmse',
-        help="plot the RMSE graphs",
-        action='store_true')
-    parser.add_argument(
-        '-sr', '--success_rate',
-        help="plot the success rate graphs",
-        action='store_true')
-    parser.add_argument(
-        '-it', '--imputation_time',
-        help="plot the imputation time graphs",
-        action='store_true')
-    parser.add_argument(
-        '-s', '--save',
-        help="save the analysis",
-        action='store_true')
-    parser.add_argument(
-        '-in', '--input', '--experiments',
-        help='the folder the experiments were saved to (optional) [default: output]',
-        default='output',
-        type=str)
-    parser.add_argument(
-        '-out', '--output', '--analysis',
-        help='save the analysis to a different folder (optional) [default: analysis]',
-        default='analysis',
-        type=str)
-    parser.add_argument(
-        '-nsi', '--no_system_information',
-        help="don't log system information",
-        action='store_true')
-    parser.add_argument(
-        '-v', '--verbose',
-        help='enable verbose logging',
-        action='store_true')
-    args = parser.parse_args()
-
-    main(args)

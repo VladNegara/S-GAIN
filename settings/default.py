@@ -68,12 +68,11 @@ enable_loss_monitor = True                 # Default: True
 
 # Output settings
 output_folder = 'output'       # Default: 'output'
-analysis_folder = 'analysis'   # Default: 'analysis'
 verbose = True                 # Default: True
+no_imputation = False          # Default: False
 no_log = False                 # Default: False
 no_graph = False               # Default: False
 no_model = False               # Default: False
-no_save = False                # Default: False
 no_system_information = False  # Default: False
 
 # Run settings
@@ -84,11 +83,21 @@ loop_until_complete = True       # Default: True
 perform_analysis = True          # Default: True
 auto_shutdown = False            # Default: False
 
+# Analysis settings
+analysis_folder = 'analysis'     # Default: 'analysis'
+compile_metrics = True           # Default: True
+plot_rmse = True                 # Default: True
+plot_success_rate = True         # Default: True
+plot_imputation_time = True      # Default: True
+plot_memory_usage = True         # Default: True
+plot_energy_consumption = True   # Default: True
+
 # Inclusions
 inclusions = [{
     'n_runs': 1,
     'enable_FLOPs_monitor': True,
-    'output_folder': 'output_FLOPs'
+    'output_folder': 'output_FLOPs',
+    'analysis_folder': 'analysis_FLOPs'
 }]
 
 # Exclusions (overwrites inclusions)

@@ -12,9 +12,8 @@ https://github.com/BrianPvanOers/S-GAIN/releases/tag/v0.1.0-alpha) *
 
 Contact: b.p.vanoers@student.utwente.nl
 
-\* Alternatively one may import s_gain from models.IDEAL2025.s_gain_TFv1_FP32_init_only in main.py to run the
-experiments associated with this paper with the current tools for analysis. The settings used for the experiments
-discussed in this paper are also available in run_experiments.py for easy replication.
+\* Alternatively one may load the IDEAL2025 settings to run the experiments associated with this paper for easy
+replication, with the current tools for analysis.
 
 ---
 

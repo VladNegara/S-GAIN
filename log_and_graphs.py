@@ -33,7 +33,7 @@ def main(args):
 
     # Get the parameters
     directory = args.folder
-    no_graph = args.no_graph
+    no_graph = args.no_graphs
     no_system_information = args.no_system_information
     verbose = args.verbose
 

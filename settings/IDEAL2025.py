@@ -69,12 +69,11 @@ enable_loss_monitor = False
 
 # Output settings
 output_folder = 'output'
-analysis_folder = 'analysis'
 verbose = True
+no_imputation = False
 no_log = False
 no_graph = False
 no_model = False
-no_save = False
 no_system_information = True
 
 # Run settings
@@ -84,6 +83,15 @@ retry_failed_experiments = True
 loop_until_complete = True
 perform_analysis = False
 auto_shutdown = False
+
+# Analysis settings
+analysis_folder = 'analysis'
+compile_metrics = True
+plot_rmse = True
+plot_success_rate = True
+plot_imputation_time = False
+plot_memory_usage = False
+plot_energy_consumption = False
 
 # Inclusions
 inclusions = [{

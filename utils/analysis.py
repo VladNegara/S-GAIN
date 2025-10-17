@@ -311,13 +311,12 @@ def plot_legend(ax, legend_ax, legend_loc, show_bs_hr_a_i, subtitle):
         lgnd.set_title(lgnd_title, prop={'size': 13})
 
 
-def compile_metrics(experiments, experiments_info, save=False, folder='analysis', verbose=False):
+def compile_metrics(experiments, experiments_info, folder='analysis', verbose=False):
     """Compile the metrics of the provided experiments.
     Metrics: RMSE mean, std and improvement, and successes, total runs and success rate
 
     :param experiments: a Pandas DataFrame with the experiments to compile
     :param experiments_info: a dictionary with the experiments information
-    :param save: whether to save the compiled metrics
     :param folder: the folder to save the compiled metrics to
     :param verbose: enable verbose output to console
 
@@ -419,20 +418,18 @@ def compile_metrics(experiments, experiments_info, save=False, folder='analysis'
     exps['imputation_time_std_finalization'] = exps['imputation_time_std_finalization'].round(7)
 
     # Save the metrics
-    if save:
-        if verbose: print('Saving compiled metrics...')
-        if not isdir(folder): mkdir(folder)
-        exps.to_csv(f'{folder}/metrics.csv', index=False)
+    if verbose: print('Saving compiled metrics...')
+    if not isdir(folder): mkdir(folder)
+    exps.to_csv(f'{folder}/metrics.csv', index=False)
 
     return exps
 
 
-def plot_rmse(experiments, sys_info=None, save=False, folder='analysis', verbose=False):
+def plot_rmse(experiments, sys_info=None, folder='analysis', verbose=False):
     """Plot the RMSE of the provided experiments.
 
     :param experiments: a Pandas DataFrame with the (non-compiled) experiments
     :param sys_info: the system info (in print ready format)
-    :param save: whether to save the plots
     :param folder: the folder to save the plots to
     :param verbose: enable verbose output to console
     """
@@ -499,7 +496,7 @@ def plot_rmse(experiments, sys_info=None, save=False, folder='analysis', verbose
 
     #  -- Plot RMSE ---------------------------------------------------------------------------------------------------
 
-    if verbose: print(f'Plotting RMSE...')
+    if verbose: print(f'Plotting RMSE graphs...')
 
     # Group by dataset, miss_rate, miss_modality and seed
     exps = experiments.drop(['index', 'filetype'], axis='columns')
@@ -563,20 +560,18 @@ def plot_rmse(experiments, sys_info=None, save=False, folder='analysis', verbose
         # Plot parameters
         plt.suptitle(title, size=24, y=y_title)
 
-        if save:
-            if verbose: print(f'Saving plot...')
-            path = f'{folder}/{title}_RMSE.pdf'
-            plt.savefig(path, format='pdf', dpi=1200)
+        if verbose: print(f'Saving plot...')
+        path = f'{folder}/{title}_RMSE.pdf'
+        plt.savefig(path, format='pdf', dpi=1200)
 
-        fig.show()
+        plt.close()
 
 
-def plot_success_rate(experiments, sys_info=None, save=False, folder='analysis', verbose=False):
+def plot_success_rate(experiments, sys_info=None, folder='analysis', verbose=False):
     """Plot the success rate of the provided experiments.
 
     :param experiments: a Pandas DataFrame with the (non-compiled) experiments
     :param sys_info: the system info (in print ready format)
-    :param save: whether to save the plots
     :param folder: the folder to save the plots to
     :param verbose: enable verbose output to console
     """
@@ -630,7 +625,7 @@ def plot_success_rate(experiments, sys_info=None, save=False, folder='analysis',
 
     #  -- Plot success rate -------------------------------------------------------------------------------------------
 
-    if verbose: print(f'Plotting success rate...')
+    if verbose: print(f'Plotting success rate graphs...')
 
     # Group by dataset, miss_rate, miss_modality and seed
     exps = experiments.drop(['index', 'filetype'], axis='columns')
@@ -701,20 +696,18 @@ def plot_success_rate(experiments, sys_info=None, save=False, folder='analysis',
         # Plot parameters
         plt.suptitle(title, size=24, y=y_title)
 
-        if save:
-            if verbose: print(f'Saving plot...')
-            path = f'{folder}/{title}_success_rate.pdf'
-            plt.savefig(path, format='pdf', dpi=1200)
+        if verbose: print(f'Saving plot...')
+        path = f'{folder}/{title}_success_rate.pdf'
+        plt.savefig(path, format='pdf', dpi=1200)
 
-        fig.show()
+        plt.close()
 
 
-def plot_imputation_time(experiments_info, sys_info=None, save=False, folder='analysis', verbose=False):
+def plot_imputation_time(experiments_info, sys_info=None, folder='analysis', verbose=False):
     """Plot the imputation time of the provided experiments.
 
     :param experiments_info: a dictionary with the experiments information
     :param sys_info: the system info (in print ready format)
-    :param save: whether to save the plots
     :param folder: the folder to save the plots to
     :param verbose: enable verbose output to console
     """
@@ -832,7 +825,7 @@ def plot_imputation_time(experiments_info, sys_info=None, save=False, folder='an
 
     #  -- Plot imputation time ----------------------------------------------------------------------------------------
 
-    if verbose: print(f'Plotting success rate...')
+    if verbose: print(f'Plotting imputation time graphs...')
 
     # Group by dataset, miss_rate, miss_modality and seed
     exps = get_experiments_from_info(experiments_info)
@@ -896,9 +889,8 @@ def plot_imputation_time(experiments_info, sys_info=None, save=False, folder='an
         # Plot parameters
         plt.suptitle(title, size=24, y=y_title)
 
-        if save:
-            if verbose: print(f'Saving plot...')
-            path = f'{folder}/{title}_imputation_time.pdf'
-            plt.savefig(path, format='pdf', dpi=1200)
+        if verbose: print(f'Saving plot...')
+        path = f'{folder}/{title}_imputation_time.pdf'
+        plt.savefig(path, format='pdf', dpi=1200)
 
-        fig.show()
+        plt.close()

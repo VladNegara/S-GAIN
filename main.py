@@ -75,9 +75,9 @@ def main(args):
     folder = args.folder
     verbose = args.verbose
     no_log = args.no_log
-    no_graph = args.no_graph
+    no_graph = args.no_graphs
     no_model = args.no_model
-    no_save = args.no_save
+    no_save = args.no_imputation
     no_system_information = args.no_system_information
 
     # Standardization
