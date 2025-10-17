@@ -119,7 +119,7 @@ if __name__ == '__main__':
     settings = subparsers.add_parser('settings')
     settings.add_argument(
         'operation',
-        choices=['show', 'load', 'store', ],
+        choices=['show', 'load', 'store'],
         help='show current settings, load previous settings (default, IDEAL2025, ...) or store current settings',
         type=str
     )

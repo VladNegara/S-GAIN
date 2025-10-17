@@ -12,26 +12,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Settings file for S-GAIN.
+"""Settings file for S-GAIN and the testing framework.
 
 * loop_until_complete only works when: retry_failed_experiments = True and ignore_existing_files = False
 """
 
-# Data preparation settings
+# Data preparation
 dataset = ['health', 'fashion_mnist']  # Options: ['spam', 'letter', 'health', 'mnist', 'fashion_mnist', 'cifar10']
 miss_rate = [0.2]
 miss_modality = ['MCAR']               # Options: ['MCAR', 'MAR', 'MNAR']
-seed = [0]
-store_prepared_dataset = False
+seed = [0]                             # Use None for random seed
+store_prepared_dataset = True          # Default: True
 
-# S-GAIN settings
+# S-GAIN
 version = ['TFv1_FP32']  # Options: ['TFv1_FP32', 'TFv1_INT8']
 batch_size = [128]       # Default: [128]
 hint_rate = [0.9]        # Default: [0.9]
 alpha = [100]            # Default: [100]
 iterations = [10000]     # Default: [10000]
 
-# Generator settings
+# Generator
 generator_sparsity = [0, 0.6, 0.8, 0.9, 0.95, 0.99]
 generator_initialization = ['dense', 'random']       # Options: ['dense', 'random', 'ER', 'ERRW']
 generator_regrower = [None]  # Todo list options

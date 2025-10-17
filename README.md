@@ -117,7 +117,7 @@ $ python log_and_graphs.py --verbose
 
 ---
 
-### Analyze
+### Analyze (deprecated, use "s_gain.py analyze" instead)
 
 - **all:** plot all the graphs
 - **rmse:** plot the RMSE graphs
@@ -138,7 +138,7 @@ $ python analyze.py --all --save --experiments output --analysis analysis --verb
 
 ---
 
-### Run_experiments
+### Run experiments (deprecated, use "s_gain.py run" instead)
 
 One may use this file to run multiple experiments in sequence, automatically analyze them and if needed shutdown the
 computer after wards (if no experiments will be run; auto_shutdown is ignored). The settings are given as lists.
@@ -234,6 +234,7 @@ additional settings not already explained in prior sections:
 ####
 
 - **analyze.py:** This file is used to run the analysis of the experiments.
+- **config.py:** This file contains all the settings for S-GAIN and the testing framework.
 - **log_and_graphs.py:** This file is used to compile the temporary files into a single log file and to plot the
   corresponding graphs.
 - **main.py:** The main file from which the experiments are run.

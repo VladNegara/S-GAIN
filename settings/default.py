@@ -20,11 +20,11 @@ These are the default settings.
 """
 
 # Data preparation settings
-dataset = ['fashion_mnist']     # Options: ['spam', 'letter', 'health', 'mnist', 'fashion_mnist', 'cifar10']
+dataset = ['fashion_mnist']    # Options: ['spam', 'letter', 'health', 'mnist', 'fashion_mnist', 'cifar10']
 miss_rate = [0.2]
-miss_modality = ['MCAR']        # Options: ['MCAR', 'MAR', 'MNAR']
-seed = [0]
-store_prepared_dataset = False
+miss_modality = ['MCAR']       # Options: ['MCAR', 'MAR', 'MNAR']
+seed = [0]                     # Use None for random seed
+store_prepared_dataset = True  # Default: True
 
 # S-GAIN settings
 version = ['TFv1_FP32']  # Options: ['TFv1_FP32', 'TFv1_INT8']
