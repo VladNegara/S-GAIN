@@ -18,22 +18,22 @@
 """
 
 # Data preparation settings
-dataset = ['health', 'fashion_mnist']  # ['spam', 'letter', 'health', 'mnist', 'fashion_mnist', 'cifar10']
+dataset = ['health', 'fashion_mnist']  # Options: ['spam', 'letter', 'health', 'mnist', 'fashion_mnist', 'cifar10']
 miss_rate = [0.2]
-miss_modality = ['MCAR']  # ['MCAR', 'MAR', 'MNAR']
+miss_modality = ['MCAR']               # Options: ['MCAR', 'MAR', 'MNAR']
 seed = [0]
 store_prepared_dataset = False
 
 # S-GAIN settings
-version = ['TFv1_FP32']  # ['TFv1_FP32', 'TFv1_INT8']
-batch_size = [128]  # Default: [128]
-hint_rate = [0.9]  # Default: [0.9]
-alpha = [100]  # Default: [100]
-iterations = [10000]  # Default: [10000]
+version = ['TFv1_FP32']  # Options: ['TFv1_FP32', 'TFv1_INT8']
+batch_size = [128]       # Default: [128]
+hint_rate = [0.9]        # Default: [0.9]
+alpha = [100]            # Default: [100]
+iterations = [10000]     # Default: [10000]
 
 # Generator settings
 generator_sparsity = [0, 0.6, 0.8, 0.9, 0.95, 0.99]
-generator_initialization = ['dense', 'random']  # ['dense', 'random', 'ER', 'ERRW']
+generator_initialization = ['dense', 'random']       # Options: ['dense', 'random', 'ER', 'ERRW']
 generator_regrower = [None]  # Todo list options
 generator_regrow_rate = [None]
 generator_regrow_period = [None]
@@ -45,7 +45,7 @@ generator_use_strategy = [False]
 
 # Discriminator settings
 discriminator_sparsity = [0, 0.2, 0.4, 0.6, 0.8]
-discriminator_initialization = ['dense', 'random']  # ['dense', 'random', 'ER', 'ERRW']
+discriminator_initialization = ['dense', 'random']    # Options: ['dense', 'random', 'ER', 'ERRW']
 discriminator_regrower = [None]  # Todo list options
 discriminator_regrow_rate = [None]
 discriminator_regrow_period = [None]
@@ -56,31 +56,31 @@ discriminator_enable_clipping = [False]
 discriminator_use_strategy = [False]
 
 # Monitor settings
-enable_rmse_monitor = True  # Default: True
-enable_imputation_time_monitor = True  # Default: True
-enable_memory_usage_monitor = False  # Default: True
+enable_rmse_monitor = True                 # Default: True
+enable_imputation_time_monitor = True      # Default: True
+enable_memory_usage_monitor = False        # Default: True
 enable_energy_consumption_monitor = False  # Default: True
-enable_sparsity_monitor = True  # Default: True
-enable_FLOPs_monitor = False  # Default: False (takes significantly more time)
-enable_loss_monitor = True  # Default: True
+enable_sparsity_monitor = True             # Default: True
+enable_FLOPs_monitor = False               # Default: False (takes significantly more time)
+enable_loss_monitor = True                 # Default: True
 
 # Output settings
-output_folder = 'output'  # Default: 'output'
-analysis_folder = 'analysis'  # Default: 'analysis'
-verbose = True  # Default: True
-no_log = False  # Default: False
-no_graph = False  # Default: False
-no_model = False  # Default: False
-no_save = False  # Default: False
+output_folder = 'output'       # Default: 'output'
+analysis_folder = 'analysis'   # Default: 'analysis'
+verbose = True                 # Default: True
+no_log = False                 # Default: False
+no_graph = False               # Default: False
+no_model = False               # Default: False
+no_save = False                # Default: False
 no_system_information = False  # Default: False
 
 # Run settings
 n_runs = 10
-ignore_existing_files = False  # Default: False
+ignore_existing_files = False    # Default: False
 retry_failed_experiments = True  # Default: True
-loop_until_complete = True  # Default: True
-perform_analysis = True  # Default: True
-auto_shutdown = True  # Default: False
+loop_until_complete = True       # Default: True
+perform_analysis = True          # Default: True
+auto_shutdown = True             # Default: False
 
 # Inclusions (modify the settings and run again)
 inclusions = [{
