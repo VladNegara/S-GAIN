@@ -40,7 +40,6 @@ def main(args):
     # Read run data
     with open('temp/run_data', 'r') as f:
         experiment, filepath_imputed_data, filepath_log, filepath_graphs, _ = f.read().split('\n')
-        f.close()
 
     # Compile and save the logs
     if verbose: print('Saving logs...')
@@ -248,7 +247,6 @@ def save_logs(filepath, experiment=None, directory='temp/exp_bins', sys_info=Non
 
     with open(filepath, 'w') as f:
         f.write(json.dumps(logs))
-        f.close()
 
     return RMSE, imputation_time, memory_usage, energy_consumption, sparsity, sparsity_G, sparsity_G_W1, \
         sparsity_G_W2, sparsity_G_W3, sparsity_D, sparsity_D_W1, sparsity_D_W2, sparsity_D_W3, FLOPs, FLOPs_G, \

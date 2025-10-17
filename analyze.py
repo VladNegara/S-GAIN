@@ -15,7 +15,7 @@
 
 """Analyze the experiments:
 
-(1) extract_log_info: extract information from the experiment logs.
+(1) extract_log_info: extract information from the experiment logs
 """
 
 import argparse
@@ -45,7 +45,6 @@ def extract_log_info(logs, input_folder='output'):
         # Read the log
         with open(f'{input_folder}/{log}', 'r') as f:
             data = json.load(f)
-            f.close()
 
         # Get imputation time
         it = data['imputation_time']

@@ -152,7 +152,6 @@ def main(args):
             f'{filepath_graphs}\n'
             f'{filepath_model}'
         )
-        f.close()
 
     # Save imputation
     if not no_save and 'nan' not in filepath_imputed_data:

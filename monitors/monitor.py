@@ -525,4 +525,3 @@ class Monitor:
 
         with open(filepath, 'w') as f:
             f.write(model)
-            f.close()
