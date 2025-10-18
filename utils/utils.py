@@ -17,9 +17,9 @@
 (1) binary_sampler: sample binary random variables
 (2) uniform_sampler: sample uniform random variables
 (3) sample_batch_index: sample index of the mini-batch
-(3) normalization: normalize the data in [0, 1] range
-(4) renormalization: re-normalize data from [0, 1] range to the original range
-(5) rounding: round the imputed data for categorical variables
+(4) normalization: normalize the data in [0, 1] range
+(5) renormalization: re-normalize data from [0, 1] range to the original range
+(6) rounding: round the imputed data for categorical variables
 """
 
 import numpy as np
