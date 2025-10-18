@@ -31,8 +31,8 @@ from os.path import isfile
 import config
 
 from utils.analysis import extract_log_info, compile_metrics, plot_rmse, plot_success_rate, plot_imputation_time
-from utils.data_loader import data_loader
 from utils.load_store import parse_files, system_information
+from run_experiments import run_experiments
 
 
 # -- Subroutines ------------------------------------------------------------------------------------------------------
@@ -113,16 +113,12 @@ def settings_subroutine(operation, filename):
         settings.print_help()
 
 
-def run_experiments():
-    pass
-
-
 def analyze():
     """Compile the metrics and plot the graphs."""
 
     # Get parameters
-    output_folder = args.input_folder if args.input_folder else config.output_folder
-    analysis_folder = args.output_folder if args.output_folder else config.analysis_folder
+    output_folder = args.input if args.input else config.output_folder
+    analysis_folder = args.output if args.output else config.analysis_folder
 
     # Get all log files
     if config.verbose: print('Loading experiments...')
@@ -138,12 +134,15 @@ def analyze():
 
     # Analyze (non-compiled) experiments
     if config.verbose: print('Analyzing experiments...')
-    if config.compile_metrics: compile_metrics(experiments, experiments_info=experiments_info, folder=analysis_folder)
-    if config.plot_rmse: plot_rmse(experiments, sys_info=sys_info, folder=analysis_folder)
-    if config.plot_success_rate: plot_success_rate(experiments, sys_info=sys_info, folder=analysis_folder)
+    if config.compile_metrics:
+        compile_metrics(experiments, experiments_info, folder=analysis_folder, verbose=config.verbose)
+    if config.plot_rmse: plot_rmse(experiments, sys_info=sys_info, folder=analysis_folder, verbose=config.verbose)
+    if config.plot_success_rate:
+        plot_success_rate(experiments, sys_info=sys_info, folder=analysis_folder, verbose=config.verbose)
 
     # Analyze experiments information
-    if config.plot_imputation_time: plot_imputation_time(experiments_info, sys_info=sys_info, folder=analysis_folder)
+    if config.plot_imputation_time:
+        plot_imputation_time(experiments_info, sys_info=sys_info, folder=analysis_folder, verbose=config.verbose)
 
     # Todo the rest of the analysis
 
