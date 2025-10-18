@@ -47,7 +47,7 @@ def main(args):
     - discriminator_sparsity: the probability of sparsity in the discriminator
     - discriminator_modality: the initialization and pruning and regrowth strategy of the discriminator
     - folder (directory): the folder to save the imputed data to
-    - verbose: enable verbose output to console
+    - verbose: enable verbose output to the console
     - no_log: turn off the logging of metrics (also disables graphs)
     - no_graph: don't plot graphs after training
     - no_model: don't save the trained model
@@ -75,9 +75,9 @@ def main(args):
     folder = args.folder
     verbose = args.verbose
     no_log = args.no_log
-    no_graph = args.no_graph
+    no_graph = args.no_graphs
     no_model = args.no_model
-    no_save = args.no_save
+    no_save = args.no_imputation
     no_system_information = args.no_system_information
 
     # Remove previous system information file
@@ -157,7 +157,6 @@ def main(args):
             f'{filepath_graphs}\n'
             f'{filepath_model}'
         )
-        f.close()
 
     # Save imputation
     if not no_save and 'nan' not in filepath_imputed_data:
@@ -259,7 +258,7 @@ if __name__ == '__main__':
         type=str)
     parser.add_argument(
         '-v', '--verbose',
-        help='enable verbose logging',
+        help='enable verbose output to the console',
         action='store_true')
     parser.add_argument(
         '-nl', '--no_log',

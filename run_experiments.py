@@ -15,6 +15,7 @@
 """Run all the specified experiments consecutively:
 
 (1) update_experiments: return the experiments to run
+(2) run_experiments: run all the experiments
 """
 
 import os
@@ -25,6 +26,7 @@ import pandas as pd
 from time import perf_counter
 from datetime import timedelta
 
+from analyze import analyze
 from config import *
 
 from utils.load_store import get_experiments, read_bin
@@ -33,6 +35,8 @@ from utils.load_store import get_experiments, read_bin
 def update_experiments():
     """Return the experiments to run.
 
+    Todo inclusions and exclusions
+
     :return: a list of experiments formatted as executable commands
     """
 
@@ -40,16 +44,18 @@ def update_experiments():
         dataset, miss_rate, miss_modality, seed, batch_size, hint_rate, alpha, iterations, generator_sparsity,
         generator_initialization, discriminator_sparsity, discriminator_initialization, folder=output_folder,
         n_runs=n_runs, ignore_existing_files=ignore_existing_files, retry_failed_experiments=retry_failed_experiments,
-        verbose=verbose, no_log=True, no_graph=True, no_model=no_model, no_save=no_save,
+        verbose=verbose, no_log=True, no_graph=True, no_model=no_model, no_save=no_imputation,
         no_system_information=no_system_information, get_commands=True
     )
 
 
-if __name__ == '__main__':
+def run_experiments():
+    """Run all the experiments."""
+
     # Get the experiment (and log_and_graphs) commands
     experiment_commands = update_experiments()
     log_and_graphs_command = f'python log_and_graphs.py' \
-                             f'{" --no_graph" if no_graph else ""}' \
+                             f'{" --no_graph" if no_graphs else ""}' \
                              f'{" --no_system_information" if no_system_information else ""}' \
                              f'{" --verbose" if verbose else ""}'
 
@@ -88,8 +94,7 @@ if __name__ == '__main__':
             break
 
     # Analyze experiments
-    if perform_analysis: os.system(f'python analyze.py --all -in {output_folder} -out {analysis_folder} --save'
-                                   f'{" --verbose" if verbose else ""}')
+    if perform_analysis: analyze()
 
     # Auto shutdown
     if auto_shutdown and total > 0:

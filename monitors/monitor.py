@@ -17,8 +17,8 @@
 Todo: run in separate thread
 
 (1) init_monitors: initialize the temporary folder
-(2) start_imputation_time_monitor: open the imputation time log file
-(3) start_rmse_monitor: open the RMSE log file
+(2) start_rmse_monitor: open the RMSE log file
+(3) start_imputation_time_monitor: open the imputation time log file
 (4) start_memory_usage_monitor: open the memory usage log file
 (5) start_energy_consumption_monitor: open the energy consumption log file
 (6) start_sparsity_monitor: open the sparsity log files
@@ -525,4 +525,3 @@ class Monitor:
 
         with open(filepath, 'w') as f:
             f.write(model)
-            f.close()

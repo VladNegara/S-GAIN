@@ -18,7 +18,8 @@ Current major changes:
 - Implemented auto shutdown for run_experiments.py.
 - Improvements to the analysis.
 - Immediately terminate failed experiments to speed up testing.
-- Improvements to the project structure.
+- Switched to a config based project structure.
+- Other improvements to the project structure.
 - Fixed bugs related to calling log_and_graphs.py from main.py or from the README.
 - Better explanation of run_experiments.py in the README.
 

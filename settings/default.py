@@ -12,28 +12,30 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Settings file for S-GAIN and the testing framework.
+"""Settings file for S-GAIN.
+
+These are the default settings.
 
 * loop_until_complete only works when: retry_failed_experiments = True and ignore_existing_files = False
 """
 
-# Data preparation
-dataset = ['health', 'fashion_mnist']  # Options: ['spam', 'letter', 'health', 'mnist', 'fashion_mnist', 'cifar10']
+# Data preparation settings
+dataset = ['fashion_mnist']    # Options: ['spam', 'letter', 'health', 'mnist', 'fashion_mnist', 'cifar10']
 miss_rate = [0.2]
-miss_modality = ['MCAR']               # Options: ['MCAR', 'MAR', 'MNAR']
-seed = [0]                             # Use None for random seed
-store_prepared_dataset = True          # Default: True
+miss_modality = ['MCAR']       # Options: ['MCAR', 'MAR', 'MNAR']
+seed = [0]                     # Use None for random seed
+store_prepared_dataset = True  # Default: True
 
-# S-GAIN
+# S-GAIN settings
 version = ['TFv1_FP32']  # Options: ['TFv1_FP32', 'TFv1_INT8']
 batch_size = [128]       # Default: [128]
 hint_rate = [0.9]        # Default: [0.9]
 alpha = [100]            # Default: [100]
 iterations = [10000]     # Default: [10000]
 
-# Generator
-generator_sparsity = [0, 0.6, 0.8, 0.9, 0.95, 0.99]
-generator_initialization = ['dense', 'random']       # Options: ['dense', 'random', 'ER', 'ERRW']
+# Generator settings
+generator_sparsity = [0]
+generator_initialization = ['dense']  # Options: ['dense', 'random', 'ER', 'ERRW']
 generator_regrower = [None]  # Todo list options
 generator_regrow_rate = [None]
 generator_regrow_period = [None]
@@ -44,8 +46,8 @@ generator_enable_clipping = [False]
 generator_use_strategy = [False]
 
 # Discriminator settings
-discriminator_sparsity = [0, 0.2, 0.4, 0.6, 0.8]
-discriminator_initialization = ['dense', 'random']    # Options: ['dense', 'random', 'ER', 'ERRW']
+discriminator_sparsity = [0]
+discriminator_initialization = ['dense']  # Options: ['dense', 'random', 'ER', 'ERRW']
 discriminator_regrower = [None]  # Todo list options
 discriminator_regrow_rate = [None]
 discriminator_regrow_period = [None]
@@ -68,8 +70,8 @@ enable_loss_monitor = True                 # Default: True
 output_folder = 'output'       # Default: 'output'
 verbose = True                 # Default: True
 no_imputation = False          # Default: False
-no_log = False                 # Default: False (also disables graphs)
-no_graphs = False              # Default: False
+no_log = False                 # Default: False
+no_graph = False               # Default: False
 no_model = False               # Default: False
 no_system_information = False  # Default: False
 
@@ -79,7 +81,7 @@ ignore_existing_files = False    # Default: False
 retry_failed_experiments = True  # Default: True
 loop_until_complete = True       # Default: True
 perform_analysis = True          # Default: True
-auto_shutdown = True             # Default: False
+auto_shutdown = False            # Default: False
 
 # Analysis settings
 analysis_folder = 'analysis'     # Default: 'analysis'
@@ -87,10 +89,10 @@ compile_metrics = True           # Default: True
 plot_rmse = True                 # Default: True
 plot_success_rate = True         # Default: True
 plot_imputation_time = True      # Default: True
-plot_memory_usage = False        # Default: True
-plot_energy_consumption = False  # Default: True
+plot_memory_usage = True         # Default: True
+plot_energy_consumption = True   # Default: True
 
-# Inclusions (modify the settings and run again)
+# Inclusions
 inclusions = [{
     'n_runs': 1,
     'enable_FLOPs_monitor': True,

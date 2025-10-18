@@ -25,7 +25,7 @@ dataset = ['spam', 'letter', 'health', 'fashion_mnist']
 miss_rate = [0.2]
 miss_modality = ['MCAR']
 seed = [0]
-store_prepared_dataset = False
+store_prepared_dataset = True  # Not used in the paper
 
 # S-GAIN settings
 version = ['TFv1_FP32']
@@ -60,21 +60,20 @@ discriminator_use_strategy = [False]
 
 # Monitor settings
 enable_rmse_monitor = True
-enable_imputation_time_monitor = False
-enable_memory_usage_monitor = False
-enable_energy_consumption_monitor = False
-enable_sparsity_monitor = False
+enable_imputation_time_monitor = True      # Not used in the paper
+enable_memory_usage_monitor = False        # Not used in the paper
+enable_energy_consumption_monitor = False  # Not used in the paper
+enable_sparsity_monitor = True             # Not used in the paper
 enable_FLOPs_monitor = False
-enable_loss_monitor = False
+enable_loss_monitor = True                 # Not used in the paper
 
 # Output settings
 output_folder = 'output'
-analysis_folder = 'analysis'
 verbose = True
+no_imputation = False
 no_log = False
 no_graph = False
 no_model = False
-no_save = False
 no_system_information = True
 
 # Run settings
@@ -82,8 +81,17 @@ n_runs = 10
 ignore_existing_files = False
 retry_failed_experiments = True
 loop_until_complete = True
-perform_analysis = False
+perform_analysis = True
 auto_shutdown = False
+
+# Analysis settings
+analysis_folder = 'analysis'
+compile_metrics = True
+plot_rmse = True
+plot_success_rate = True
+plot_imputation_time = True      # Not used in the paper
+plot_memory_usage = False        # Not used in the paper
+plot_energy_consumption = False  # Not used in the paper
 
 # Inclusions
 inclusions = [{

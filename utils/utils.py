@@ -38,7 +38,7 @@ def binary_sampler(p, rows, cols, seed=None):
     """
 
     # Fix seed for run-to-run consistency
-    if seed: np.random.seed(seed)
+    if seed is not None: np.random.seed(seed)
 
     uniform_random_matrix = np.random.uniform(0., 1., size=(rows, cols))
     binary_random_matrix = 1 * (uniform_random_matrix < p)
