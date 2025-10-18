@@ -113,43 +113,6 @@ def settings_subroutine(operation, filename):
         settings.print_help()
 
 
-def prepare_datasets(dataset, miss_rate, miss_modality, seed):
-    """Prepare the datasets.
-
-    :param dataset: the dataset to prepare
-    :param miss_rate: the miss rate
-    :param miss_modality: the miss modality
-    :param seed: the seed
-    """
-
-    if config.verbose: print("Preparing dataset(s)...")
-
-    # Set parameters
-    if not dataset: dataset = config.dataset
-    if not miss_rate: miss_rate = config.miss_rate
-    if not miss_modality: miss_modality = config.miss_modality
-
-    # Set seed
-    if seed is None:  # No seed specified, use config
-        seed = config.seed
-    elif not seed:  # Random seed
-        seed = None
-
-    # Turn parameters into lists
-    if type(dataset) is not list: dataset = [dataset]
-    if type(miss_rate) is not list: miss_rate = [miss_rate]
-    if type(miss_modality) is not list: miss_modality = [miss_modality]
-    if type(seed) is not list: seed = [seed]
-
-    [   # Call data_loader
-        data_loader(d, mr, mm, s, store_prepared_dataset=True, verbose=config.verbose)
-        for d in dataset
-        for mr in miss_rate
-        for mm in miss_modality
-        for s in seed
-    ]
-
-
 def run_experiments():
     pass
 
@@ -212,11 +175,8 @@ def main(args):
     subroutine = args.subroutine
     if subroutine == 'settings':
         settings_subroutine(args.operation, args.filename)
-    elif subroutine == 'prepare':
-        prepare_datasets(args.dataset, args.miss_rate, args.miss_modality, args.seed)
     elif subroutine == 'run':
-        # run_experiments()
-        pass
+        run_experiments()
     elif subroutine == 'analyze':
         analyze()
     else:
@@ -248,63 +208,6 @@ if __name__ == '__main__':
         help='the name of the settings file to show, load, store or delete (shows the current settings if left blank)',
         nargs='?',
         type=str
-    )
-
-    # Todo prepare datasets: only call the dataloader
-    prepare = subparsers.add_parser(
-        'prepare',
-        help='prepare the datasets specified in config.py'
-    )
-    prepare.add_argument(
-        'dataset',
-        help='the dataset to prepare (overwrites config)',
-        nargs='?',
-        type=str
-    )
-    prepare.add_argument(
-        '--datasets', '-ds',
-        help='the datasets to prepare (overwrites config)',
-        nargs='+',
-        type=str
-    )
-    prepare.add_argument(
-        'miss_rate',
-        help='the miss rate to prepare the datasets with (overwrites config)',
-        nargs='?',
-        type=float
-    )
-    prepare.add_argument(
-        '--miss_rate', '--miss_rates', '-mr',
-        help='the miss rate to prepare the datasets with (overwrites config)',
-        nargs='+',
-        type=float
-    )
-    prepare.add_argument(
-        'miss_modality',
-        help='the miss modality to prepare the datasets with (overwrites config)',
-        choices=['MCAR', 'MAR', 'MNAR', 'AI_upscaler', 'square'],
-        nargs='?',
-        type=str
-    )
-    prepare.add_argument(
-        '--miss_modality', '--miss_modalities', '-mm',
-        help='the miss modality to prepare the datasets with (overwrites config)',
-        choices=['MCAR', 'MAR', 'MNAR', 'AI_upscaler', 'square'],
-        nargs='+',
-        type=str
-    )
-    prepare.add_argument(
-        'seed',
-        help='the seeds to prepare the datasets with (overwrites config)',
-        nargs='?',
-        type=int
-    )
-    prepare.add_argument(
-        '--seed', '--seeds', '-s',
-        help='the seeds to prepare the datasets with (overwrites config). random seed if left blank',
-        default=[],
-        nargs='*',
-        type=int
     )
 
     # Run experiments
