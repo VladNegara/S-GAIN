@@ -26,6 +26,7 @@ Todo properly name the graphs, legends, labels, etc
 (8) compile_metrics: compile the metrics of the provided experiments
 (9) plot_rmse: plot the RMSE of the provided experiments
 (10) plot_success_rate: plot the success rate of the provided experiments
+(11) plot_imputation_time: plot the imputation time of the provided experiments
 """
 
 import matplotlib.pyplot as plt

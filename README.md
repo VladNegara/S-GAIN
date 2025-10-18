@@ -12,8 +12,8 @@ https://github.com/BrianPvanOers/S-GAIN/releases/tag/v0.1.0-alpha) *
 
 Contact: b.p.vanoers@student.utwente.nl
 
-\* Alternatively one may load the IDEAL2025 settings to run the experiments associated with this paper for easy
-replication, with the current tools for analysis.
+\* Alternatively, for easy replication, one may load the IDEAL2025 settings to run the experiments associated with this
+paper, with the current tools for analysis.
 
 ---
 
@@ -64,7 +64,7 @@ automatically analyze them and if needed shutdown the computer after wards.
 ####
 
 - **folder (directory):** save the imputed data to a different folder (optional, default: 'output')
-- **verbose:** enable verbose logging
+- **verbose:** enable verbose output to the console
 - **no_log:** turn off the logging of metrics (also disables graphs)
 - **no_graph:** don't plot graphs after training
 - **no_model:** don't save the trained model

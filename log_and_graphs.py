@@ -28,7 +28,7 @@ def main(args):
     - directory: the directory of the temporary files
     - no_graph: don't plot the graphs (log only)
     - no_system_information: don't log system information
-    - verbose: enable verbose output to console
+    - verbose: enable verbose output to the console
     """
 
     # Get the parameters
@@ -271,7 +271,7 @@ if __name__ == '__main__':
         action='store_true')
     parser.add_argument(
         '-v', '--verbose',
-        help='enable verbose logging',
+        help='enable verbose output to the console',
         action='store_true')
     args = parser.parse_args()
 
