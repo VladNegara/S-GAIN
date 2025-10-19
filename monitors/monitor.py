@@ -484,6 +484,7 @@ class Monitor:
         self.stop_energy_consumption_monitor()
         self.stop_sparsity_monitor()
         self.stop_flops_monitor()
+        self.stop_loss_monitor()
 
         if self.verbose: print('Stopped monitors.')
         return False
