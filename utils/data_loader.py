@@ -111,18 +111,23 @@ def data_loader(dataset, miss_rate, miss_modality, seed=None):
 
         w = np.random.uniform(0., 1., size=d)
 
+        # Normalize data using min-max scaling
+        data_x_min = data_x.min(axis=0)
+        data_x_max = data_x.max(axis=0)
+        data_x_normalized = (data_x.copy() - data_x_min) / (data_x_max - data_x_min)
+
         # Array to memoize the denominator in the formula
         denominators = np.zeros(shape=(d,))
         for i in range(d):
             for n in range(N):
-                denominators[i] += np.exp(-w[i] * data_x[n][i])
+                denominators[i] += np.exp(-w[i] * data_x_normalized[n][i])
 
         data_mask = np.ones(shape=(N,d))
         miss_data_x = data_x.copy()
 
         for i in range(d):
             for n in range(N):
-                P = p_m[i] * N * np.exp(-w[i] * data_x[n][i]) / denominators[i]
+                P = p_m[i] * N * np.exp(-w[i] * data_x_normalized[n][i]) / denominators[i]
 
                 uniform_random_value = np.random.uniform()
 
