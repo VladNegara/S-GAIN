@@ -65,13 +65,20 @@ def data_loader(dataset, miss_rate, miss_modality, seed=None):
 
         # Array to memoize the denominator in the formula
         denominators = np.zeros(shape=(d+1,))
+
+        # The first denominator is always equal to N
         denominators[0] = N
 
+        # Set the seed
         if seed: np.random.seed(seed)
 
+        # Initialize random weights with the U(0,1) distribution
         w = np.random.uniform(0., 1., size=d)
+
+        # Initialize random biases with the U(0,1) distribution
         b = np.random.uniform(0., 1., size=d)
 
+        # Initialize the mask and the data with missingness
         data_mask = np.ones(shape=(N,d))
         miss_data_x = data_x.copy()
 
@@ -82,25 +89,36 @@ def data_loader(dataset, miss_rate, miss_modality, seed=None):
 
         # Iterate over the features, then the rows
         for i in range(d):
-            for n in range(N):                
+            for n in range(N):
+                # Extract the memoized exponent in the numerator of the formula
                 numerator_exponent = exponent_terms[n][i]
 
+                # Extract the memoized denominator of the formula
                 denominator = denominators[i]
 
+                # Compute the probability of missingness using the formula
                 P = p_m[i] * N * np.exp(-numerator_exponent) / denominator
 
+                # Generate a random value between 0 and 1 to check against the
+                # probability
                 uniform_random_value = np.random.uniform()
-
                 if uniform_random_value < P:
                     # The value is missing
                     data_mask[n][i] = 0
                     miss_data_x[n][i] = np.nan
 
+                    # Add the bias of this feature to the memoized numerator
+                    # exponent for the next feature
                     exponent_terms[n][i+1] = exponent_terms[n][i] + b[i]
                 else:
+                    # Add the weighted value of this feature to the memoized
+                    # numerator exponent for the next feature
                     exponent_terms[n][i+1] = exponent_terms[n][i] + w[i] * data_x_normalized[n][i]
-                
+
+                # Add the numerator exponent for the next feature to its
+                # memoized denominator
                 denominators[i+1] += np.exp(-exponent_terms[n][i+1])
+
     elif miss_modality == 'MNAR':
         N, d = data_x.shape
 
