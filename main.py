@@ -196,8 +196,8 @@ if __name__ == '__main__':
         type=float)
     parser.add_argument(
         '-mm', '--miss_modality',
-        help='the modality of missing data (MCAR, MAR, MNAR)',
-        choices=['MCAR', 'MAR', 'MNAR'],
+        help='the modality of missing data (MCAR, MAR, MNAR, SQUARE)',
+        choices=['MCAR', 'MAR', 'MNAR', 'SQUARE'],
         default='MCAR',
         type=str)
     parser.add_argument(

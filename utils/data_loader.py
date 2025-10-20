@@ -25,8 +25,6 @@ def data_loader(dataset, miss_rate, miss_modality, seed=None):
     - data_mask: the indicator matrix for missing elements
     """
 
-    image_datasets = ['fashion_mnist', 'cifar10']
-
     # Load the data
     if dataset in ['health', 'letter', 'spam']:
         file_name = f'datasets/{dataset}.csv'
@@ -122,7 +120,7 @@ def data_loader(dataset, miss_rate, miss_modality, seed=None):
                     # The value is missing
                     data_mask[n][i] = 0
                     miss_data_x[n][i] = np.nan
-    elif dataset in image_datasets:
+    elif miss_modality == 'SQUARE':
         no, dim = data_x.shape
         data_mask = remove_square_image(miss_rate, no, dim, seed)
         miss_data_x = data_x.copy()
