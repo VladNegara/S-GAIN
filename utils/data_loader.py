@@ -76,14 +76,7 @@ def data_loader(dataset, miss_rate, miss_modality, seed=None):
         miss_data_x = data_x.copy()
 
         for i in range(d):
-            for n in range(N):
-                if data_mask[n][i] == 1:
-                    exponent_terms[n][i+1] = exponent_terms[n][i] + w[i] * miss_data_x[n][i]
-                else:
-                    exponent_terms[n][i+1] = exponent_terms[n][i] + b[i]
-                
-                denominators[i+1] += np.exp(-exponent_terms[n][i+1])
-                
+            for n in range(N):                
                 numerator_exponent = exponent_terms[n][i]
 
                 denominator = denominators[i]
@@ -96,6 +89,12 @@ def data_loader(dataset, miss_rate, miss_modality, seed=None):
                     # The value is missing
                     data_mask[n][i] = 0
                     miss_data_x[n][i] = np.nan
+
+                    exponent_terms[n][i+1] = exponent_terms[n][i] + b[i]
+                else:
+                    exponent_terms[n][i+1] = exponent_terms[n][i] + w[i] * data_x[n][i]
+                
+                denominators[i+1] += np.exp(-exponent_terms[n][i+1])
     elif miss_modality == 'MNAR':
         N, d = data_x.shape
 
