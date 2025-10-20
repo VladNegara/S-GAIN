@@ -12,9 +12,8 @@ https://github.com/BrianPvanOers/S-GAIN/releases/tag/v0.1.0-alpha) *
 
 Contact: b.p.vanoers@student.utwente.nl
 
-\* Alternatively one may import s_gain from models.IDEAL2025.s_gain_TFv1_FP32_init_only in main.py to run the
-experiments associated with this paper with the current tools for analysis. The settings used for the experiments
-discussed in this paper are also available in run_experiments.py for easy replication.
+\* Alternatively, for easy replication, one may load the IDEAL2025 settings to run the experiments associated with this
+paper, with the current tools for analysis.
 
 ---
 
@@ -65,7 +64,7 @@ automatically analyze them and if needed shutdown the computer after wards.
 ####
 
 - **folder (directory):** save the imputed data to a different folder (optional, default: 'output')
-- **verbose:** enable verbose logging
+- **verbose:** enable verbose output to the console
 - **no_log:** turn off the logging of metrics (also disables graphs)
 - **no_graph:** don't plot graphs after training
 - **no_model:** don't save the trained model
@@ -118,7 +117,7 @@ $ python log_and_graphs.py --verbose
 
 ---
 
-### Analyze
+### Analyze (deprecated, use "s_gain.py analyze" instead)
 
 - **all:** plot all the graphs
 - **rmse:** plot the RMSE graphs
@@ -139,7 +138,7 @@ $ python analyze.py --all --save --experiments output --analysis analysis --verb
 
 ---
 
-### Run_experiments
+### Run experiments (deprecated, use "s_gain.py run" instead)
 
 One may use this file to run multiple experiments in sequence, automatically analyze them and if needed shutdown the
 computer after wards (if no experiments will be run; auto_shutdown is ignored). The settings are given as lists.
@@ -235,6 +234,7 @@ additional settings not already explained in prior sections:
 ####
 
 - **analyze.py:** This file is used to run the analysis of the experiments.
+- **config.py:** This file contains all the settings for S-GAIN and the testing framework.
 - **log_and_graphs.py:** This file is used to compile the temporary files into a single log file and to plot the
   corresponding graphs.
 - **main.py:** The main file from which the experiments are run.

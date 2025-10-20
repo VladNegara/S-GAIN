@@ -17,9 +17,9 @@
 (1) binary_sampler: sample binary random variables
 (2) uniform_sampler: sample uniform random variables
 (3) sample_batch_index: sample index of the mini-batch
-(3) normalization: normalize the data in [0, 1] range
-(4) renormalization: re-normalize data from [0, 1] range to the original range
-(5) rounding: round the imputed data for categorical variables
+(4) normalization: normalize the data in [0, 1] range
+(5) renormalization: re-normalize data from [0, 1] range to the original range
+(6) rounding: round the imputed data for categorical variables
 """
 
 import numpy as np
@@ -38,7 +38,7 @@ def binary_sampler(p, rows, cols, seed=None):
     """
 
     # Fix seed for run-to-run consistency
-    if seed: np.random.seed(seed)
+    if seed is not None: np.random.seed(seed)
 
     uniform_random_matrix = np.random.uniform(0., 1., size=(rows, cols))
     binary_random_matrix = 1 * (uniform_random_matrix < p)
