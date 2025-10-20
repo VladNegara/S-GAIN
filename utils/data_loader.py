@@ -154,12 +154,17 @@ def data_loader(dataset, miss_rate, miss_modality, seed=None):
                     data_mask[n][i] = 0
                     miss_data_x[n][i] = np.nan
     elif miss_modality == 'SQUARE':
+
+        # Square miss modality only works if the dataset is an image, it would not make sense for other types of data
         if not image_dataset:
             print('SQUARE miss modality is only valid for image datasets. Exiting the program.')
             return None
+        
         no, dim = data_x.shape
         data_mask = remove_square_image(miss_rate, no, dim, seed)
         miss_data_x = data_x.copy()
+
+        # Use the data mask to make values nan for the model
         miss_data_x[data_mask == 0] = np.nan
     else:
         print('Invalid miss modality. Exiting the program.')
