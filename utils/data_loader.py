@@ -12,11 +12,13 @@ from keras.datasets import mnist, fashion_mnist, cifar10
 def data_loader(dataset, miss_rate, miss_modality, seed=None):
     """Load a dataset and introduce missing elements.
 
-    Todo: other miss modalities [MAR, MNAR, AI_upscaler, square]
+    Returns `None` if the miss modality is incompatible with the dataset.
+
+    Todo: other miss modalities [AI_upscaler]
 
     :param dataset: the dataset to use
     :param miss_rate: the probability of missing elements in the data
-    :param miss_modality: the modality of missing data [MCAR, MAR, MNAR, AI_upscaler, square]
+    :param miss_modality: the modality of missing data [MCAR, MAR, MNAR, SQUARE]
     :param seed: the seed used to introduce missing elements in the data
 
     :return:
