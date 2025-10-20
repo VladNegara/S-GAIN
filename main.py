@@ -36,7 +36,7 @@ def main(args):
     :param args:
     - dataset: the dataset to use
     - miss_rate: the probability of missing elements in the data
-    - miss_modality: the modality of missing data (MCAR, MAR, MNAR)
+    - miss_modality: the modality of missing data (MCAR, MAR, MNAR, SQUARE)
     - seed: the seed used to introduce missing elements in the data (optional)
     - batch_size: the number of samples in mini-batch
     - hint_rate: the hint probability
@@ -131,8 +131,12 @@ def main(args):
 
     # Load the data with missing elements
     data = data_loader(dataset, miss_rate, miss_modality, seed)
+
+    # Stop if data loading fails
     if data is None:
         return None
+
+    # Unpack loaded data
     data_x, miss_data_x, data_mask = data
 
     # Initialize monitor
