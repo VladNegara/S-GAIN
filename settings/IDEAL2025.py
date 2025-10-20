@@ -20,6 +20,8 @@ Missing Values with Sparse Initialization", IDEAL conference, 2025.
 * loop_until_complete only works when: retry_failed_experiments = True and ignore_existing_files = False
 """
 
+# -- Settings ---------------------------------------------------------------------------------------------------------
+
 # Data preparation settings
 dataset = ['spam', 'letter', 'health', 'fashion_mnist']
 miss_rate = [0.2]
@@ -69,20 +71,10 @@ enable_loss_monitor = True                 # Not used in the paper
 
 # Output settings
 output_folder = 'output'
-verbose = True
 no_imputation = False
 no_log = False
 no_graph = False
 no_model = False
-no_system_information = True
-
-# Run settings
-n_runs = 10
-ignore_existing_files = False
-retry_failed_experiments = True
-loop_until_complete = True
-perform_analysis = True
-auto_shutdown = False
 
 # Analysis settings
 analysis_folder = 'analysis'
@@ -92,6 +84,14 @@ plot_success_rate = True
 plot_imputation_time = True      # Not used in the paper
 plot_memory_usage = False        # Not used in the paper
 plot_energy_consumption = False  # Not used in the paper
+
+# Run settings
+n_runs = 10
+ignore_existing_files = False
+retry_failed_experiments = True
+loop_until_complete = True
+perform_analysis = True
+auto_shutdown = False
 
 # Inclusions
 inclusions = [{
@@ -103,3 +103,7 @@ inclusions = [{
 
 # Exclusions (overwrites inclusions)
 exclusions = []
+
+# Options
+verbose = True
+no_system_information = False  # Not used in the paper

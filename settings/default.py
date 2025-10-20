@@ -19,6 +19,8 @@ These are the default settings.
 * loop_until_complete only works when: retry_failed_experiments = True and ignore_existing_files = False
 """
 
+# -- Settings ---------------------------------------------------------------------------------------------------------
+
 # Data preparation settings
 dataset = ['fashion_mnist']    # Options: ['spam', 'letter', 'health', 'mnist', 'fashion_mnist', 'cifar10']
 miss_rate = [0.2]
@@ -67,21 +69,11 @@ enable_FLOPs_monitor = False               # Default: False (takes significantly
 enable_loss_monitor = True                 # Default: True
 
 # Output settings
-output_folder = 'output'       # Default: 'output'
-verbose = True                 # Default: True
-no_imputation = False          # Default: False
-no_log = False                 # Default: False
-no_graph = False               # Default: False
-no_model = False               # Default: False
-no_system_information = False  # Default: False
-
-# Run settings
-n_runs = 10
-ignore_existing_files = False    # Default: False
-retry_failed_experiments = True  # Default: True
-loop_until_complete = True       # Default: True
-perform_analysis = True          # Default: True
-auto_shutdown = False            # Default: False
+output_folder = 'output' # Default: 'output'
+no_imputation = False    # Default: False
+no_log = False           # Default: False
+no_graph = False         # Default: False
+no_model = False         # Default: False
 
 # Analysis settings
 analysis_folder = 'analysis'     # Default: 'analysis'
@@ -91,6 +83,14 @@ plot_success_rate = True         # Default: True
 plot_imputation_time = True      # Default: True
 plot_memory_usage = True         # Default: True
 plot_energy_consumption = True   # Default: True
+
+# Run settings
+n_runs = 10
+ignore_existing_files = False    # Default: False
+retry_failed_experiments = True  # Default: True
+loop_until_complete = True       # Default: True
+perform_analysis = True          # Default: True
+auto_shutdown = False            # Default: False
 
 # Inclusions
 inclusions = [{
@@ -102,3 +102,7 @@ inclusions = [{
 
 # Exclusions (overwrites inclusions)
 exclusions = []
+
+# Options
+verbose = True                 # Default: True
+no_system_information = False  # Default: False

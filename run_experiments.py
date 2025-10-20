@@ -26,7 +26,6 @@ import pandas as pd
 from time import perf_counter
 from datetime import timedelta
 
-from analyze import analyze
 from config import *
 
 from utils.load_store import get_experiments, read_bin
@@ -94,7 +93,7 @@ def run_experiments():
             break
 
     # Analyze experiments
-    if perform_analysis: analyze()
+    if perform_analysis: os.system('python s_gain.py analyze')
 
     # Auto shutdown
     if auto_shutdown and total > 0:
