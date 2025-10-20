@@ -256,20 +256,20 @@ if __name__ == '__main__':
         help='enable verbose output to the console',
         action='store_true')
     parser.add_argument(
+        '-ns', '--no_imputation',
+        help="don't save the imputation",
+        action='store_true')
+    parser.add_argument(
         '-nl', '--no_log',
         help='turn off the logging of metrics (also disables graphs)',
         action='store_true')
     parser.add_argument(
-        '-ng', '--no_graph',
+        '-ng', '--no_graphs',
         help="don't plot graphs after training",
         action='store_true')
     parser.add_argument(
         '-nm', '--no_model',
         help="don't save the trained model",
-        action='store_true')
-    parser.add_argument(
-        '-ns', '--no_save',
-        help="don't save the imputation",
         action='store_true')
     parser.add_argument(
         '-nsi', '--no_system_information',
