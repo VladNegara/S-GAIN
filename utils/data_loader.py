@@ -75,6 +75,12 @@ def data_loader(dataset, miss_rate, miss_modality, seed=None):
         data_mask = np.ones(shape=(N,d))
         miss_data_x = data_x.copy()
 
+        # Normalize data using min-max scaling
+        data_x_min = data_x.min(axis=0)
+        data_x_max = data_x.max(axis=0)
+        data_x_normalized = (data_x.copy() - data_x_min) / (data_x_max - data_x_min)
+
+        # Iterate over the features, then the rows
         for i in range(d):
             for n in range(N):                
                 numerator_exponent = exponent_terms[n][i]
@@ -92,7 +98,7 @@ def data_loader(dataset, miss_rate, miss_modality, seed=None):
 
                     exponent_terms[n][i+1] = exponent_terms[n][i] + b[i]
                 else:
-                    exponent_terms[n][i+1] = exponent_terms[n][i] + w[i] * data_x[n][i]
+                    exponent_terms[n][i+1] = exponent_terms[n][i] + w[i] * data_x_normalized[n][i]
                 
                 denominators[i+1] += np.exp(-exponent_terms[n][i+1])
     elif miss_modality == 'MNAR':
