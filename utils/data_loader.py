@@ -5,7 +5,7 @@
 
 import numpy as np
 
-from utils.utils import binary_sampler
+from utils.utils import binary_sampler, remove_square_image
 from keras.datasets import mnist, fashion_mnist, cifar10
 
 
@@ -24,6 +24,8 @@ def data_loader(dataset, miss_rate, miss_modality, seed=None):
     - miss_data_x: the data with missing values
     - data_mask: the indicator matrix for missing elements
     """
+
+    image_datasets = ['fashion_mnist', 'cifar10']
 
     # Load the data
     if dataset in ['health', 'letter', 'spam']:
@@ -120,6 +122,11 @@ def data_loader(dataset, miss_rate, miss_modality, seed=None):
                     # The value is missing
                     data_mask[n][i] = 0
                     miss_data_x[n][i] = np.nan
+    elif dataset in image_datasets:
+        no, dim = data_x.shape
+        data_mask = remove_square_image(miss_rate, no, dim, seed)
+        miss_data_x = data_x.copy()
+        miss_data_x[data_mask == 0] = np.nan
     else:
         print('Invalid miss modality. Exiting the program.')
         return None
