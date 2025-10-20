@@ -125,8 +125,10 @@ def data_loader(dataset, miss_rate, miss_modality, seed=None):
         # Uniform p_m
         p_m = np.full((d,), miss_rate)
 
+        # Set the seed
         if seed: np.random.seed(seed)
 
+        # Initialize random weights with the U(0,1) distribution
         w = np.random.uniform(0., 1., size=d)
 
         # Normalize data using min-max scaling
@@ -140,19 +142,27 @@ def data_loader(dataset, miss_rate, miss_modality, seed=None):
             for n in range(N):
                 denominators[i] += np.exp(-w[i] * data_x_normalized[n][i])
 
+        # Initialize the mask and the data with missingness
         data_mask = np.ones(shape=(N,d))
         miss_data_x = data_x.copy()
 
+        # Iterate over the features, then the rows
         for i in range(d):
             for n in range(N):
-                P = p_m[i] * N * np.exp(-w[i] * data_x_normalized[n][i]) / denominators[i]
+                # Extract the memoized denominator of the formula
+                denominator = denominators[i]
 
+                # Compute the probability of missingness using the formula
+                P = p_m[i] * N * np.exp(-w[i] * data_x_normalized[n][i]) / denominator
+
+                # Generate a random value between 0 and 1 to check against the
+                # probability
                 uniform_random_value = np.random.uniform()
-
                 if uniform_random_value < P:
                     # The value is missing
                     data_mask[n][i] = 0
                     miss_data_x[n][i] = np.nan
+
     elif miss_modality == 'SQUARE':
 
         # Square miss modality only works if the dataset is an image, it would not make sense for other types of data
