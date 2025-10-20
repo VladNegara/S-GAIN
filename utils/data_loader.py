@@ -25,8 +25,11 @@ def data_loader(dataset, miss_rate, miss_modality, seed=None):
     - data_mask: the indicator matrix for missing elements
     """
 
+    image_dataset = True
+
     # Load the data
     if dataset in ['health', 'letter', 'spam']:
+        image_dataset = False
         file_name = f'datasets/{dataset}.csv'
         data_x = np.loadtxt(file_name, delimiter=',', skiprows=1)
     elif dataset == 'mnist':
@@ -121,6 +124,9 @@ def data_loader(dataset, miss_rate, miss_modality, seed=None):
                     data_mask[n][i] = 0
                     miss_data_x[n][i] = np.nan
     elif miss_modality == 'SQUARE':
+        if not image_dataset:
+            print('SQUARE miss modality is only valid for image datasets. Exiting the program.')
+            return None
         no, dim = data_x.shape
         data_mask = remove_square_image(miss_rate, no, dim, seed)
         miss_data_x = data_x.copy()
