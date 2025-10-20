@@ -130,7 +130,10 @@ def main(args):
         print('Loading data...')
 
     # Load the data with missing elements
-    data_x, miss_data_x, data_mask = data_loader(dataset, miss_rate, miss_modality, seed)
+    data = data_loader(dataset, miss_rate, miss_modality, seed)
+    if data is None:
+        return None
+    data_x, miss_data_x, data_mask = data
 
     # Initialize monitor
     monitor = None if no_log and no_model else Monitor(data_x, data_mask, experiment=experiment, verbose=verbose)
