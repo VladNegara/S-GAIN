@@ -262,7 +262,7 @@ if __name__ == '__main__':
         default='temp/exp_bins',
         type=str)
     parser.add_argument(
-        '-ng', '--no_graph',
+        '-ng', '--no_graphs',
         help="don't plot the graphs (log only)",
         action='store_true')
     parser.add_argument(
