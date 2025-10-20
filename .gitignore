@@ -1,7 +1,6 @@
 .idea/
 .venv/
 __pycache__/
-analysis/
-output/
+analysis*/
+output*/
 temp/
-temp2/

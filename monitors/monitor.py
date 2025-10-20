@@ -17,8 +17,8 @@
 Todo: run in separate thread
 
 (1) init_monitors: initialize the temporary folder
-(2) start_imputation_time_monitor: open the imputation time log file
-(3) start_rmse_monitor: open the RMSE log file
+(2) start_rmse_monitor: open the RMSE log file
+(3) start_imputation_time_monitor: open the imputation time log file
 (4) start_memory_usage_monitor: open the memory usage log file
 (5) start_energy_consumption_monitor: open the energy consumption log file
 (6) start_sparsity_monitor: open the sparsity log files
@@ -51,7 +51,7 @@ import struct
 from os import makedirs, fsync
 from os.path import isdir
 from shutil import rmtree
-from time import time
+from time import perf_counter
 
 from utils.metrics import get_rmse
 
@@ -118,7 +118,7 @@ class Monitor:
         """
 
         self.f_imputation_time = open(f'{self.directory}/imputation_time.bin', 'ab')
-        self.imputation_time = time()
+        self.imputation_time = perf_counter()
 
         if self.verbose: print('Monitoring imputation time...')
         return True
@@ -228,7 +228,7 @@ class Monitor:
         - step_time: the time (in seconds) between the previous step and now
         """
 
-        current_time = time()
+        current_time = perf_counter()
         step_time = current_time - self.imputation_time
         self.f_imputation_time.write(struct.pack('f', step_time))
         self.imputation_time = current_time
@@ -484,6 +484,7 @@ class Monitor:
         self.stop_energy_consumption_monitor()
         self.stop_sparsity_monitor()
         self.stop_flops_monitor()
+        self.stop_loss_monitor()
 
         if self.verbose: print('Stopped monitors.')
         return False
@@ -523,6 +524,5 @@ class Monitor:
             }
         })
 
-        f_model = open(filepath, 'w')
-        f_model.write(model)
-        f_model.close()
+        with open(filepath, 'w') as f:
+            f.write(model)

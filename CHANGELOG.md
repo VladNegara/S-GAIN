@@ -13,12 +13,15 @@ This version is currently being developed and seeks to implement full monitoring
 - GPU temperatures (to check for throttling).
 - GPU VRAM usage.
 
-Current changes:
+Current major changes:
 - Implemented imputation time analysis.
 - Implemented auto shutdown for run_experiments.py.
-- Minor improvements to the analysis.
-- Minor improvements to the project structure.
+- Improvements to the analysis.
+- Immediately terminate failed experiments to speed up testing.
+- Switched to a config based project structure.
+- Other improvements to the project structure.
 - Fixed bugs related to calling log_and_graphs.py from main.py or from the README.
+- Better explanation of run_experiments.py in the README.
 
 ## Pre-release v0.1.2-alpha (11-09-2025)
 

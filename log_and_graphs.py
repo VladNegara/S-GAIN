@@ -28,19 +28,18 @@ def main(args):
     - directory: the directory of the temporary files
     - no_graph: don't plot the graphs (log only)
     - no_system_information: don't log system information
-    - verbose: enable verbose output to console
+    - verbose: enable verbose output to the console
     """
 
     # Get the parameters
-    directory = args.directory
-    no_graph = args.no_graph
+    directory = args.folder
+    no_graph = args.no_graphs
     no_system_information = args.no_system_information
     verbose = args.verbose
 
     # Read run data
-    f = open('temp/run_data', 'r')
-    experiment, filepath_imputed_data, filepath_log, filepath_graphs, _ = f.read().split('\n')
-    f.close()
+    with open('temp/run_data', 'r') as f:
+        experiment, filepath_imputed_data, filepath_log, filepath_graphs, _ = f.read().split('\n')
 
     # Compile and save the logs
     if verbose: print('Saving logs...')
@@ -95,7 +94,7 @@ def save_logs(filepath, experiment=None, directory='temp/exp_bins', sys_info=Non
     """
 
     # Read the log files
-    RMSE = read_bin(f'{directory}/RMSE.bin')
+    RMSE = read_bin(f'{directory}/rmse.bin')
     imputation_time = read_bin(f'{directory}/imputation_time.bin')
     memory_usage = [0]  # read_bin(f'{directory}/memory_usage.bin')
     energy_consumption = []  # read_bin(f'{directory}/energy_consumption.bin')
@@ -246,9 +245,8 @@ def save_logs(filepath, experiment=None, directory='temp/exp_bins', sys_info=Non
         }
     })
 
-    f_logs = open(filepath, 'w')
-    f_logs.write(json.dumps(logs))
-    f_logs.close()
+    with open(filepath, 'w') as f:
+        f.write(json.dumps(logs))
 
     return RMSE, imputation_time, memory_usage, energy_consumption, sparsity, sparsity_G, sparsity_G_W1, \
         sparsity_G_W2, sparsity_G_W3, sparsity_D, sparsity_D_W1, sparsity_D_W2, sparsity_D_W3, FLOPs, FLOPs_G, \
@@ -259,12 +257,12 @@ if __name__ == '__main__':
     # Inputs for the main function
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        '-d', '-dir', '--directory', '-f', '--folder',
+        '-f', '--folder', '-d', '-dir', '--directory',
         help='the directory of the temporary files',
         default='temp/exp_bins',
         type=str)
     parser.add_argument(
-        '-ng', '--no_graph',
+        '-ng', '--no_graphs',
         help="don't plot the graphs (log only)",
         action='store_true')
     parser.add_argument(
@@ -273,7 +271,7 @@ if __name__ == '__main__':
         action='store_true')
     parser.add_argument(
         '-v', '--verbose',
-        help='enable verbose logging',
+        help='enable verbose output to the console',
         action='store_true')
     args = parser.parse_args()
 
