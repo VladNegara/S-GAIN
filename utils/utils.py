@@ -61,22 +61,41 @@ def uniform_sampler(low, high, rows, cols):
     return uniform_random_matrix
 
 def remove_square_image(miss_rate, rows, cols, seed):
+    """Create a mask where a square is missing.
+
+    :param miss_rate: the size of the missing square
+    :param rows: the number of rows for dataset
+    :param cols: the number of columns for dataset
+    :param seed: the seed for where the square is
+
+    :return:
+    - mask_arr: an array of the size of the original dataset with values of 0 or 1 depending on if the values should be included    
+    """
     seed = np.random.seed(seed)
     mask = []
 
+    # for loop over every image
     for _ in range(rows):
+
+        # Size of the image is the square root of the number of columns
+        # We want to unflatten the image
         size = int(cols**0.5)
         temp_mask = np.ones((size, size))
         
+        # The min_pos is how close the image can be to the top left corner
         min_pos = int((miss_rate*size*size)**0.5)
 
+        # Max positions of both dimensions
         max_cols = np.random.randint(min_pos, size)
         max_rows = np.random.randint(min_pos, size)
 
         box_start_cols = max_cols - min_pos
         box_start_rows = max_rows - min_pos
 
+        # Set values in the square to 0
         temp_mask[box_start_cols:max_cols, box_start_rows:max_rows] = 0
+
+        # Flatten the mask to match original dataset
         mask.append(temp_mask.flatten())
 
     mask_arr = np.array(mask)
