@@ -171,7 +171,7 @@ def data_loader(dataset, miss_rate, miss_modality, seed=None):
             return None
         
         no, dim = data_x.shape
-        data_mask = remove_square_image(miss_rate, no, dim, seed)
+        data_mask = missing_square_masks(miss_rate, no, dim, seed)
         miss_data_x = data_x.copy()
 
         # Use the data mask to make values nan for the model
