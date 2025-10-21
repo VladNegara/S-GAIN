@@ -86,14 +86,14 @@ def remove_square_image(miss_rate, rows, cols, seed):
         min_pos = int((miss_rate*size*size)**0.5)
 
         # Max positions of both dimensions
-        max_cols = np.random.randint(min_pos, size)
-        max_rows = np.random.randint(min_pos, size)
+        max_x = np.random.randint(min_pos, size)
+        max_y = np.random.randint(min_pos, size)
 
-        box_start_cols = max_cols - min_pos
-        box_start_rows = max_rows - min_pos
+        box_start_x = max_x - min_pos
+        box_start_y = max_y - min_pos
 
         # Set values in the square to 0
-        temp_mask[box_start_cols:max_cols, box_start_rows:max_rows] = 0
+        temp_mask[box_start_x:max_x, box_start_y:max_y] = 0
 
         # Flatten the mask to match original dataset
         mask.append(temp_mask.flatten())
