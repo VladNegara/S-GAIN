@@ -158,7 +158,7 @@ def prepare_plot(nGsm, nDsm, ax_width=6.4, ax_height=4.8, share_axis=False):
 
         if not info_ax or not legend_ax:
             # Plot parameters
-            width, height, left, right, top, bottom, wspace, hspace = get_sizing(3, nrows, ax_width, ax_height)
+            width, height, left, right, top, bottom, wspace, hspace, y_title = get_sizing(3, nrows, ax_width, ax_height)
             fig, axs = plt.subplots(nrows, 3, figsize=(width, height))
             plt.subplots_adjust(left=left, right=right, top=top, bottom=bottom, wspace=wspace, hspace=hspace)
 
