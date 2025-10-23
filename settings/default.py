@@ -22,7 +22,7 @@ These are the default settings.
 # -- Settings ---------------------------------------------------------------------------------------------------------
 
 # Data preparation settings
-dataset = ['fashion_mnist']    # Options: ['spam', 'letter', 'health', 'mnist', 'fashion_mnist', 'cifar10']
+dataset = ['spam', 'letter']   # Options: ['spam', 'letter', 'health', 'mnist', 'fashion_mnist', 'cifar10']
 miss_rate = [0.2]
 miss_modality = ['MCAR']       # Options: ['MCAR', 'MAR', 'MNAR']
 seed = [0]                     # Use None for random seed
@@ -36,28 +36,37 @@ alpha = [100]            # Default: [100]
 iterations = [10000]     # Default: [10000]
 
 # Generator settings
-generator_sparsity = [0]
 generator_initialization = ['dense']  # Options: ['dense', 'random', 'ER', 'ERRW']
-generator_regrower = [None]  # Todo list options
-generator_regrow_rate = [None]
-generator_regrow_period = [None]
+generator_sparsity = [0]
 generator_pruner = [None]  # Todo list options
-generator_prune_rate = [None]
-generator_prune_period = [None]
-generator_enable_clipping = [False]
-generator_use_strategy = [False]
+generator_prune_rate = [0]
+generator_prune_period = [0]
+generator_regrower = [None]  # Todo list options
+generator_regrow_rate = [0]
+generator_regrow_period = [0]
+generator_enable_clipping = False
+generator_strategy = [None]
+generator_use_strategy = False
 
 # Discriminator settings
-discriminator_sparsity = [0]
 discriminator_initialization = ['dense']  # Options: ['dense', 'random', 'ER', 'ERRW']
-discriminator_regrower = [None]  # Todo list options
-discriminator_regrow_rate = [None]
-discriminator_regrow_period = [None]
+discriminator_sparsity = [0]
 discriminator_pruner = [None]  # Todo list options
-discriminator_prune_rate = [None]
-discriminator_prune_period = [None]
-discriminator_enable_clipping = [False]
-discriminator_use_strategy = [False]
+discriminator_prune_rate = [0]
+discriminator_prune_period = [0]
+discriminator_regrower = [None]  # Todo list options
+discriminator_regrow_rate = [0]
+discriminator_regrow_period = [0]
+discriminator_enable_clipping = False
+discriminator_strategy = [None]
+discriminator_use_strategy = False
+
+# Output settings
+output_folder = 'output'  # Default: 'output'
+no_imputation = False     # Default: False
+no_log = False            # Default: False
+no_graphs = False         # Default: False
+no_model = False          # Default: False
 
 # Monitor settings
 enable_rmse_monitor = True                 # Default: True
@@ -68,15 +77,15 @@ enable_sparsity_monitor = True             # Default: True
 enable_FLOPs_monitor = False               # Default: False (takes significantly more time)
 enable_loss_monitor = True                 # Default: True
 
-# Output settings
-output_folder = 'output' # Default: 'output'
-no_imputation = False    # Default: False
-no_log = False           # Default: False
-no_graph = False         # Default: False
-no_model = False         # Default: False
+# Run settings
+n_runs = 10                      # Default: 10
+retry_failed_experiments = True  # Default: True
+max_failed_experiments = 40      # Default: 40 (success_rate < 20%)
+ignore_existing_files = False    # Default: False
 
 # Analysis settings
 analysis_folder = 'analysis'     # Default: 'analysis'
+perform_analysis = True          # Default: True
 compile_metrics = True           # Default: True
 plot_rmse = True                 # Default: True
 plot_success_rate = True         # Default: True
@@ -84,20 +93,12 @@ plot_imputation_time = True      # Default: True
 plot_memory_usage = True         # Default: True
 plot_energy_consumption = True   # Default: True
 
-# Run settings
-n_runs = 10
-ignore_existing_files = False    # Default: False
-retry_failed_experiments = True  # Default: True
-loop_until_complete = True       # Default: True
-perform_analysis = True          # Default: True
-auto_shutdown = False            # Default: False
-
-# Inclusions
+# Inclusions (modify the settings and run again)
 inclusions = [{
     'n_runs': 1,
     'enable_FLOPs_monitor': True,
     'output_folder': 'output_FLOPs',
-    'analysis_folder': 'analysis_FLOPs'
+    'perform_analysis': False
 }]
 
 # Exclusions (overwrites inclusions)
@@ -106,3 +107,4 @@ exclusions = []
 # Options
 verbose = True                 # Default: True
 no_system_information = False  # Default: False
+auto_shutdown = False          # Default: False
