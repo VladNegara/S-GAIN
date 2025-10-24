@@ -300,6 +300,11 @@ def s_gain(miss_data_x, batch_size=128, hint_rate=0.9, alpha=100, iterations=100
     if verbose: print('Rounding data...')
     imputed_data_x = rounding(imputed_data_x, miss_data_x)
 
+    # Only impute missing data
+    data_mask = np.zeros(miss_data_x.shape, dtype=int)
+    data_mask[np.isnan(miss_data_x)] = 1
+    imputed_data_x = np.where(data_mask, imputed_data_x, miss_data_x)
+
     # Reshaping
     if reshaped:
         if verbose: print('Reshaping the imputed data to the original shape...')

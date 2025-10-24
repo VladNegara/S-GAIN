@@ -57,12 +57,12 @@ def s_gain(miss_data_x, batch_size=128, hint_rate=0.9, alpha=100, iterations=100
     - imputed_data_x: the imputed data
     """
 
-    if verbose: print('Starting GAIN...')
-
     # Start monitors
-    if monitor is not None:
+    if monitor:
         monitor.init_monitor()
         monitor.start_all_monitors()
+
+    if verbose: print('Starting GAIN...')
 
     # Reshape the missing data
     shape = miss_data_x.shape
@@ -304,6 +304,11 @@ def s_gain(miss_data_x, batch_size=128, hint_rate=0.9, alpha=100, iterations=100
     # Rounding
     if verbose: print('Rounding data...')
     imputed_data_x = rounding(imputed_data_x, miss_data_x)
+
+    # Only impute missing data
+    data_mask = np.zeros(miss_data_x.shape, dtype=int)
+    data_mask[np.isnan(miss_data_x)] = 1
+    imputed_data_x = np.where(data_mask, imputed_data_x, miss_data_x)
 
     # Reshaping
     if reshaped:
