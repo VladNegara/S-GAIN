@@ -22,7 +22,7 @@
 # Data preparation settings
 dataset = ['health', 'fashion_mnist']  # Options: ['spam', 'letter', 'health', 'mnist', 'fashion_mnist', 'cifar10']
 miss_rate = [0.2]
-miss_modality = ['MCAR']               # Options: ['MCAR', 'MAR', 'MNAR']
+miss_modality = ['MCAR']               # Options: ['MCAR', 'MAR', 'MNAR', 'upscaler', 'square']
 seed = [0]                             # Use None for random seed
 store_prepared_dataset = True          # Default: True
 
