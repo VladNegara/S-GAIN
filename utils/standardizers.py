@@ -39,6 +39,7 @@ def standardize(key, value):
     :return: The standardized value(s)
     """
 
+    # Standardize
     if key == 'dataset': return standardize_dataset(value)
     if key == 'miss_modality': return standardize_miss_modality(value)
     if key == 'version': return standardize_version(value)
@@ -61,6 +62,10 @@ def standardize_dataset(dataset):
     :return: the standardized dataset
     """
 
+    # Handle lists
+    if type(dataset) == list: return [standardize_dataset(d) for d in dataset]
+
+    # Standardize
     if not dataset: return None
     if dataset.lower() in ['spam', 'letter', 'health']: return dataset.lower()
     if dataset.lower() in ['mnist', 'cifar10']: return dataset.upper()
@@ -76,10 +81,13 @@ def standardize_miss_modality(miss_modality):
     :return: the standardized miss modality
     """
 
+    # Handle lists
+    if type(miss_modality) == list: return [standardize_miss_modality(mm) for mm in miss_modality]
+
+    # Standardize
     if not miss_modality: return None
     if miss_modality.upper() in ['MCAR', 'MAR', 'MNAR']: return miss_modality.upper()
-    if miss_modality.lower() == 'ai_upscaler': return 'AI_upscaler'
-    if miss_modality.lower() == 'square': return 'square'
+    if miss_modality.lower() in ['upscaler', 'square']: return miss_modality.lower()
     return miss_modality
 
 
@@ -91,25 +99,35 @@ def standardize_version(version):
     :return: the standardized version
     """
 
+    # Handle lists
+    if type(version) == list: return [standardize_version(v) for v in version]
+
+    # Standardize
     if not version: return None
     if version.upper() == 'TFV1_FP32': return 'TFv1_FP32'
     if version.upper() == 'TFV2_INT8': return 'TFv2_INT8'
     return version
 
 
-def standardize_init(init, sparsity):
+def standardize_init(init, sparsity=1.0):
     """Standardize the initialization and sparsity.
 
     :param init: the initialization
-    :param sparsity: the sparsity
+    :param sparsity: the sparsity (optional)
 
-    :return: the standardized initialization and sparsity
+    :return:
+    - init: the standardized initialization
+    - sparsity: the sparsity (if sparsity < 1)
     """
 
+    # Handle lists and initialization only
+    if type(init) == list: return [standardize_init(i, sparsity) for i in init]
+    if sparsity >= 1.0: return standardize_init(init, 0.5)[0]
+
+    # Standardize
     if not init: return None, None
-    if sparsity == 0 or init.lower() == 'dense': return init.lower(), 0
-    if init.lower() in ['normal_random', 'normal', 'nr', 'n']: return 'NR', sparsity
-    if init.lower() in ['uniform_normal', 'uniform', 'ur', 'u']: return 'UR', sparsity
+    if sparsity <= 0. or init.lower() == 'dense': return init.lower(), 0.
+    if init.lower() == 'random': return 'random', sparsity
     if init.lower() in ['erdos_renyi', 'er']: return 'ER', sparsity
     if init.lower() in ['erdos_renyi_kernel', 'erk']: return 'ERK', sparsity
     if init.lower() in ['erdos_renyi_normal_random', 'erdos_renyi_normal', 'ernr', 'ern']: return 'ERNR', sparsity
@@ -132,6 +150,10 @@ def standardize_pruner(pruner):
     :return: the standardized pruner
     """
 
+    # Handle lists
+    if type(pruner) == list: return [standardize_pruner(p) for p in pruner]
+
+    # Standardize
     if not pruner: return None
     if pruner.lower() in ['random', 'magnitude']: return pruner.lower()
     return pruner
@@ -145,6 +167,10 @@ def standardize_regrower(regrower):
     :return: the standardized regrower
     """
 
+    # Handle lists
+    if type(regrower) == list: return [standardize_regrower(r) for r in regrower]
+
+    # Standardize
     if not regrower: return None
     if regrower.lower() == 'random': return 'random'
     return regrower
@@ -160,4 +186,8 @@ def standardize_strategy(strategy):
     :return: the standardized strategy
     """
 
+    # Handle lists
+    if type(strategy) == list: return [standardize_strategy(s) for s in strategy]
+
+    # Standardize
     return strategy
