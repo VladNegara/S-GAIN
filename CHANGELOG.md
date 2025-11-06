@@ -2,9 +2,15 @@
 
 This file marks the changes since the submission of the manuscript to the IDEAL 2025 conference.
 
-## Pre-release v0.1.3-alpha (in development)
+## Pre-release v0.2.0-beta (future)
 
-This version is currently being developed and seeks to implement full monitoring of system resources:
+This version implements S-GAIN in TensorFlow v2, uses INT8 precision for quantization, and uses sparse tensors (COO
+matrices).
+
+## Pre-release v0.1.4-alpha (in development)
+
+This version is currently being developed and seeks to implement full monitoring of system resources.
+
 - Memory usage.
 - Energy consumption (possible integration with HWMonitor on Windows to detect power draw).
 - CPU utilization.
@@ -13,19 +19,24 @@ This version is currently being developed and seeks to implement full monitoring
 - GPU temperatures (to check for throttling).
 - GPU VRAM usage.
 
-Current major changes:
+## Pre-release v0.1.3-alpha (TBD)
+
+This version saw major a major overhaul of the testing framework and major improvements to the analysis. This version
+marks the end of my role as project supervisor for the Data Science and Artificial Intelligence elective at the
+University of Twente.
+
+- Switched to a config based project structure.
 - Implemented imputation time analysis.
+- Immediately terminate failed experiments to speed up testing.
 - Implemented auto shutdown for run_experiments.py.
 - Improvements to the analysis.
-- Immediately terminate failed experiments to speed up testing.
-- Switched to a config based project structure.
 - Other improvements to the project structure.
-- Fixed bugs related to calling log_and_graphs.py from main.py or from the README.
-- Better explanation of run_experiments.py in the README.
 
 ## Pre-release v0.1.2-alpha (11-09-2025)
 
-This version saw major improvements to the analysis:
+This version saw major improvements to the analysis. This version marks the start of my role as project supervisor for
+the Data Science and Artificial Intelligence elective at the University of Twente.
+
 - Implemented loss monitoring (cross entropy and MSE).
 - Now plots all graphs to a single file along with experiment information and system details.
 - Plot sizing is now consistent for all number of subplots.
@@ -33,7 +44,8 @@ This version saw major improvements to the analysis:
 
 ## Pre-release v0.1.1-alpha (28-08-2025)
 
-This version saw a major overhaul of the testing framework:
+This version saw a major overhaul of the testing framework.
+
 - Now specifies all experiment settings for the output files for easy manipulation of data and replication of results.
 - Implemented imputation time monitoring.
 - run_experiments.py replaces loop_main.py and solves the issue of TensorFlow not restarting.

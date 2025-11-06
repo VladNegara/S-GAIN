@@ -14,8 +14,11 @@
 
 """Utility functions for S-GAIN:
 
-(1) binary_sampler: sample binary random variables
-(2) uniform_sampler: sample uniform random variables
+Samplers:
+(1) uniform_sampler: sample uniform random variables
+(2) binary_sampler: sample binary random variables
+
+Other functions:
 (3) sample_batch_index: sample index of the mini-batch
 (4) normalization: normalize the data in [0, 1] range
 (5) renormalization: re-normalize data from [0, 1] range to the original range
@@ -23,6 +26,28 @@
 """
 
 import numpy as np
+
+
+# -- Samplers ---------------------------------------------------------------------------------------------------------
+
+def uniform_sampler(low, high, rows, cols, seed=None):
+    """Sample uniform random variables.
+
+    :param low: the low limit
+    :param high: the high limit
+    :param rows: the number of rows
+    :param cols: the number of columns
+    :param seed: the random seed
+
+    :return:
+    - uniform_random_matrix: a uniform random matrix
+    """
+
+    # Fix seed for run-to-run consistency
+    if seed is not None: np.random.seed(seed)
+
+    uniform_random_matrix = np.random.uniform(low, high, size=(rows, cols))
+    return uniform_random_matrix
 
 
 def binary_sampler(p, rows, cols, seed=None):
@@ -37,10 +62,7 @@ def binary_sampler(p, rows, cols, seed=None):
     - binary_random_matrix: a binary random matrix
     """
 
-    # Fix seed for run-to-run consistency
-    if seed is not None: np.random.seed(seed)
-
-    uniform_random_matrix = np.random.uniform(0., 1., size=(rows, cols))
+    uniform_random_matrix = uniform_sampler(0., 1., rows, cols, seed)
     binary_random_matrix = 1 * (uniform_random_matrix < p)
     return binary_random_matrix
 
