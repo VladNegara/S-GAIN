@@ -67,7 +67,7 @@ def binary_sampler(p, rows, cols, seed=None):
     return binary_random_matrix
 
 
-def uniform_sampler(low, high, rows, cols):
+def uniform_sampler(low, high, rows, cols, seed=None):
     """Sample uniform random variables.
 
     :param low: the low limit
@@ -78,6 +78,9 @@ def uniform_sampler(low, high, rows, cols):
     :return:
     - uniform_random_matrix: a uniform random matrix
     """
+
+    if seed is not None: 
+        np.random.seed(seed=seed)
 
     uniform_random_matrix = np.random.uniform(low, high, size=(rows, cols))
     return uniform_random_matrix
