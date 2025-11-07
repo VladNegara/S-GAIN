@@ -5,7 +5,7 @@
 
 import numpy as np
 
-from utils.utils import binary_sampler, remove_square_image
+from utils.utils import binary_sampler, missing_square_masks
 from keras.datasets import mnist, fashion_mnist, cifar10
 
 
