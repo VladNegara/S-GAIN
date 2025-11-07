@@ -107,21 +107,24 @@ def missing_square_masks(miss_rate, rows, cols, seed):
     for _ in range(rows):
         # Size of the image is the square root of the number of pixels
         # We want to unflatten the image
-        size = int(cols**0.5)
-        temp_mask = np.ones((size, size))
+        image_size = int(cols**0.5)
+        temp_mask = np.ones((image_size, image_size))
+
+        square_size = int((miss_rate**0.5) * image_size)
         
-        # The min_pos is how close the image can be to the top left corner
-        min_pos = int((miss_rate**0.5) * size)
+        # The max_pos is how far the square can be from the top left corner
+        max_pos = image_size - square_size
 
-        # Max positions of both dimensions
-        max_x = np.random.randint(min_pos, size)
-        max_y = np.random.randint(min_pos, size)
+        # Left and upper edges of the square
+        square_left_x = np.random.randint(0, max_pos)
+        square_upper_y = np.random.randint(0, max_pos)
 
-        box_start_x = max_x - min_pos
-        box_start_y = max_y - min_pos
+        # Right and lower edges of the square
+        square_right_x = square_left_x + square_size
+        square_lower_y = square_upper_y + square_size
 
         # Set values in the square to 0
-        temp_mask[box_start_x:max_x, box_start_y:max_y] = 0
+        temp_mask[square_left_x:square_right_x, square_upper_y:square_lower_y] = 0
 
         # Flatten the mask to match original dataset
         mask.append(temp_mask.flatten())
