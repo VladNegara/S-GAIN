@@ -62,7 +62,9 @@ def uniform_sampler(low, high, rows, cols):
 
 def missing_square_masks(miss_rate, rows, cols, seed):
     """For a list of flattened images, create a list of masks that remove a
-    square from each image
+    square from each image.
+
+    The function assumes that each flattened image was originally square.
 
     :param miss_rate: the ratio between the size of the missing square and the
     size of the image
@@ -76,9 +78,9 @@ def missing_square_masks(miss_rate, rows, cols, seed):
     seed = np.random.seed(seed)
     mask = []
 
-    # for loop over every image
+    # Loop over flattened images
     for _ in range(rows):
-        # Size of the image is the square root of the number of columns
+        # Size of the image is the square root of the number of pixels
         # We want to unflatten the image
         size = int(cols**0.5)
         temp_mask = np.ones((size, size))
