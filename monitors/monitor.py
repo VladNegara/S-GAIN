@@ -16,7 +16,10 @@
 
 Todo: run in separate thread
 
+Initialization:
 (1) init_monitors: initialize the temporary folder
+
+Start monitors:
 (2) start_rmse_monitor: open the RMSE log file
 (3) start_imputation_time_monitor: open the imputation time log file
 (4) start_memory_usage_monitor: open the memory usage log file
@@ -25,6 +28,8 @@ Todo: run in separate thread
 (7) start_flops_monitor: open the FLOPs log files
 (8) start_loss_monitor: open the loss log files
 (9) start_all_monitors: start all the monitors
+
+Log metrics:
 (10) log_rmse: log the RMSE
 (11) log_imputation_time: log the imputation time
 (12) log_memory_usage: log the memory usage
@@ -33,6 +38,8 @@ Todo: run in separate thread
 (15) log_flops: log the FLOPs
 (16) log_loss: log the loss
 (17) log_all_monitors: log the all monitors
+
+Stop monitors:
 (18) stop_rmse_monitor: close the RMSE log file
 (19) stop_imputation_time_monitor: close the imputation time log file
 (20) stop_memory_usage_monitor: close the memory usage log file
@@ -41,6 +48,8 @@ Todo: run in separate thread
 (23) stop_flops_monitor: close the FLOPs log files
 (24) stop_loss_monitor: close the loss log files
 (25) stop_all_monitors: close all the monitors
+
+Store trained model:
 (26) set_model: set the (trained) model, so it can be saved later
 (27) save_model: save the (trained) model to a json file
 """
@@ -48,7 +57,7 @@ Todo: run in separate thread
 import json
 import struct
 
-from os import makedirs, fsync
+from os import makedirs
 from os.path import isdir
 from shutil import rmtree
 from time import perf_counter
@@ -57,13 +66,25 @@ from utils.metrics import get_rmse
 
 
 class Monitor:
-    def __init__(self, data_x, data_mask, experiment=None, directory='temp/exp_bins', verbose=False):
+
+    # -- Initialization -----------------------------------------------------------------------------------------------
+
+    def __init__(self, data_x, data_mask, enable_rmse_monitor=True, enable_imputation_time_monitor=True,
+                 enable_memory_usage_monitor=False, enable_energy_consumption_monitor=False,
+                 enable_sparsity_monitor=True, enable_FLOPs_monitor=False, enable_loss_monitor=True, experiment=None,
+                 verbose=False):
         """Initialize the monitor.
 
         :param data_x: the original data (without missing values)
         :param data_mask: the indicator matrix for missing elements
+        :param enable_rmse_monitor: enable the RMSE monitor
+        :param enable_imputation_time_monitor: enable the imputation time monitor
+        :param enable_memory_usage_monitor: enable the memory usage monitor
+        :param enable_energy_consumption_monitor: enable the energy consumption monitor
+        :param enable_sparsity_monitor: enable the sparsity monitor
+        :param enable_FLOPs_monitor: enable the FLOPs monitor
+        :param enable_loss_monitor: enable the loss monitor
         :param experiment: the name of the experiment (optional)
-        :param directory: the temporary directory
         :param verbose: enable verbose output to console
         """
 
@@ -71,21 +92,20 @@ class Monitor:
         self.data_x = data_x
         self.data_mask = data_mask
         self.experiment = experiment
-        self.directory = directory
         self.verbose = verbose
 
         # Log variables
         self.imputation_time = None
 
         # Log files
-        self.f_RMSE = None
-        self.f_imputation_time = None
-        self.f_memory_usage = None
-        self.f_energy_consumption = None
-        self.f_sparsity_G, self.f_sparsity_G_W1, self.f_sparsity_G_W2, self.f_sparsity_G_W3 = [None] * 4
-        self.f_sparsity_D, self.f_sparsity_D_W1, self.f_sparsity_D_W2, self.f_sparsity_D_W3 = [None] * 4
-        self.f_FLOPs_G, self.f_FLOPs_D = [None] * 2
-        self.f_loss_G, self.f_loss_D, self.f_loss_MSE = [None] * 3
+        self.f_RMSE = enable_rmse_monitor
+        self.f_imputation_time = enable_imputation_time_monitor
+        self.f_memory_usage = enable_memory_usage_monitor
+        self.f_energy_consumption = enable_energy_consumption_monitor
+        self.f_sparsity_G, self.f_sparsity_G_W1, self.f_sparsity_G_W2, self.f_sparsity_G_W3, self.f_sparsity_D, \
+            self.f_sparsity_D_W1, self.f_sparsity_D_W2, self.f_sparsity_D_W3 = [enable_sparsity_monitor] * 8
+        self.f_FLOPs_G, self.f_FLOPs_D = [enable_FLOPs_monitor] * 2
+        self.f_loss_G, self.f_loss_D, self.f_loss_MSE = [enable_loss_monitor] * 3
 
         # Model
         self.G_W1, self.G_W2, self.G_W3, self.G_b1, self.G_b2, self.G_b3 = [None] * 6
@@ -96,20 +116,23 @@ class Monitor:
 
         # Clear the logs and create temporary directory
         if self.verbose: print('Initializing monitor...')
-        if isdir(self.directory): rmtree(self.directory)
-        makedirs(self.directory)
+        if isdir('temp/exp_bins'): rmtree('temp/exp_bins')
+        makedirs('temp/exp_bins')
 
-    # Start monitors
+    # -- Start monitors -----------------------------------------------------------------------------------------------
+
     def start_rmse_monitor(self):
         """Open the RMSE log file and start monitoring.
 
         :return: True
         """
 
-        self.f_RMSE = open(f'{self.directory}/rmse.bin', 'ab')
+        if self.f_RMSE:
+            self.f_RMSE = open('temp/exp_bins/rmse.bin', 'ab')
+            if self.verbose: print('Monitoring RMSE...')
+            return True
 
-        # if self.verbose: print('Monitoring RMSE...')
-        return True
+        return False
 
     def start_imputation_time_monitor(self):
         """Open the imputation time log file and start monitoring.
@@ -117,11 +140,13 @@ class Monitor:
         :return: True
         """
 
-        self.f_imputation_time = open(f'{self.directory}/imputation_time.bin', 'ab')
-        self.imputation_time = perf_counter()
+        if self.f_imputation_time:
+            self.f_imputation_time = open('temp/exp_bins/imputation_time.bin', 'ab')
+            self.imputation_time = perf_counter()
+            if self.verbose: print('Monitoring imputation time...')
+            return True
 
-        if self.verbose: print('Monitoring imputation time...')
-        return True
+        return False
 
     def start_memory_usage_monitor(self):
         """Open the memory usage log file and start monitoring.
@@ -129,10 +154,12 @@ class Monitor:
         :return: True
         """
 
-        self.f_memory_usage = open(f'{self.directory}/memory_usage.bin', 'ab')
+        if self.f_memory_usage:
+            self.f_memory_usage = open('temp/exp_bins/memory_usage.bin', 'ab')
+            if self.verbose: print('Monitoring memory usage...')
+            return True
 
-        # if self.verbose: print('Monitoring memory usage...')
-        return True
+        return False
 
     def start_energy_consumption_monitor(self):
         """Open the energy consumption log file and start monitoring.
@@ -140,10 +167,12 @@ class Monitor:
         :return: True
         """
 
-        self.f_energy_consumption = open(f'{self.directory}/energy_consumption.bin', 'ab')
+        if self.f_energy_consumption:
+            self.f_energy_consumption = open('temp/exp_bins/energy_consumption.bin', 'ab')
+            if self.verbose: print('Monitoring energy consumption...')
+            return True
 
-        # if self.verbose: print('Monitoring energy consumption...')
-        return True
+        return False
 
     def start_sparsity_monitor(self):
         """Open the sparsity log files and start monitoring.
@@ -151,18 +180,20 @@ class Monitor:
         :return: True
         """
 
-        self.f_sparsity_G = open(f'{self.directory}/sparsity_G.bin', 'ab')
-        self.f_sparsity_G_W1 = open(f'{self.directory}/sparsity_G_W1.bin', 'ab')
-        self.f_sparsity_G_W2 = open(f'{self.directory}/sparsity_G_W2.bin', 'ab')
-        self.f_sparsity_G_W3 = open(f'{self.directory}/sparsity_G_W3.bin', 'ab')
+        if self.f_sparsity_G:
+            self.f_sparsity_G = open('temp/exp_bins/sparsity_G.bin', 'ab')
+            self.f_sparsity_G_W1 = open('temp/exp_bins/sparsity_G_W1.bin', 'ab')
+            self.f_sparsity_G_W2 = open('temp/exp_bins/sparsity_G_W2.bin', 'ab')
+            self.f_sparsity_G_W3 = open('temp/exp_bins/sparsity_G_W3.bin', 'ab')
+            self.f_sparsity_D = open('temp/exp_bins/sparsity_D.bin', 'ab')
+            self.f_sparsity_D_W1 = open('temp/exp_bins/sparsity_D_W1.bin', 'ab')
+            self.f_sparsity_D_W2 = open('temp/exp_bins/sparsity_D_W2.bin', 'ab')
+            self.f_sparsity_D_W3 = open('temp/exp_bins/sparsity_D_W3.bin', 'ab')
 
-        self.f_sparsity_D = open(f'{self.directory}/sparsity_D.bin', 'ab')
-        self.f_sparsity_D_W1 = open(f'{self.directory}/sparsity_D_W1.bin', 'ab')
-        self.f_sparsity_D_W2 = open(f'{self.directory}/sparsity_D_W2.bin', 'ab')
-        self.f_sparsity_D_W3 = open(f'{self.directory}/sparsity_D_W3.bin', 'ab')
+            if self.verbose: print('Monitoring sparsity...')
+            return True
 
-        if self.verbose: print('Monitoring sparsity...')
-        return True
+        return False
 
     def start_flops_monitor(self):
         """Open the FLOPs log files and start monitoring.
@@ -170,11 +201,13 @@ class Monitor:
         :return: True
         """
 
-        self.f_FLOPs_G = open(f'{self.directory}/flops_G.bin', 'ab')
-        self.f_FLOPs_D = open(f'{self.directory}/flops_D.bin', 'ab')
+        if self.f_FLOPs_G:
+            self.f_FLOPs_G = open('temp/exp_bins/flops_G.bin', 'ab')
+            self.f_FLOPs_D = open('temp/exp_bins/flops_D.bin', 'ab')
+            if self.verbose: print('Monitoring FLOPs...')
+            return True
 
-        # if self.verbose: print('Monitoring FLOPs...')
-        return True
+        return False
 
     def start_loss_monitor(self):
         """Open the loss log files and start monitoring.
@@ -182,12 +215,14 @@ class Monitor:
         :return: True
         """
 
-        self.f_loss_G = open(f'{self.directory}/loss_G.bin', 'ab')
-        self.f_loss_D = open(f'{self.directory}/loss_D.bin', 'ab')
-        self.f_loss_MSE = open(f'{self.directory}/loss_MSE.bin', 'ab')
+        if self.f_loss_G:
+            self.f_loss_G = open('temp/exp_bins/loss_G.bin', 'ab')
+            self.f_loss_D = open('temp/exp_bins/loss_D.bin', 'ab')
+            self.f_loss_MSE = open('temp/exp_bins/loss_MSE.bin', 'ab')
+            if self.verbose: print('Monitoring loss...')
+            return True
 
-        if self.verbose: print('Monitoring loss...')
-        return True
+        return False
 
     def start_all_monitors(self):
         """Start all the monitors.
@@ -196,17 +231,18 @@ class Monitor:
         """
 
         if self.verbose: print('Starting monitors...')
+        self.start_rmse_monitor()
         self.start_imputation_time_monitor()
         self.start_memory_usage_monitor()
         self.start_energy_consumption_monitor()
         self.start_sparsity_monitor()
         self.start_flops_monitor()
         self.start_loss_monitor()
-        self.start_rmse_monitor()
 
         return True
 
-    # Log metrics
+    # -- Log metrics --------------------------------------------------------------------------------------------------
+
     def log_rmse(self, imputed_data):
         """Log the RMSE.
 
@@ -216,10 +252,12 @@ class Monitor:
         - RMSE: the Root Mean Square Error
         """
 
-        RMSE = get_rmse(self.data_x, imputed_data, self.data_mask)
-        self.f_RMSE.write(struct.pack('f', RMSE))
+        if self.f_RMSE:
+            RMSE = get_rmse(self.data_x, imputed_data, self.data_mask)
+            self.f_RMSE.write(struct.pack('f', RMSE))
+            return RMSE
 
-        return RMSE
+        return None
 
     def log_imputation_time(self):
         """Log the imputation time.
@@ -228,12 +266,14 @@ class Monitor:
         - step_time: the time (in seconds) between the previous step and now
         """
 
-        current_time = perf_counter()
-        step_time = current_time - self.imputation_time
-        self.f_imputation_time.write(struct.pack('f', step_time))
-        self.imputation_time = current_time
+        if self.f_imputation_time:
+            current_time = perf_counter()
+            step_time = current_time - self.imputation_time
+            self.f_imputation_time.write(struct.pack('f', step_time))
+            self.imputation_time = current_time
+            return step_time
 
-        return step_time
+        return None
 
     def log_memory_usage(self):
         """Log the memory usage.
@@ -241,10 +281,12 @@ class Monitor:
         :return: True
         """
 
-        # Todo
-        self.f_memory_usage.write()
+        if self.f_memory_usage:
+            # Todo
+            self.f_memory_usage.write()
+            return True
 
-        return True
+        return None
 
     def log_energy_consumption(self):
         """Log the energy consumption.
@@ -252,10 +294,12 @@ class Monitor:
         :return: True
         """
 
-        # Todo
-        self.f_energy_consumption.write()
+        if self.f_energy_consumption:
+            # Todo
+            self.f_energy_consumption.write()
+            return True
 
-        return True
+        return None
 
     def log_sparsity(self, G_sparsities, D_sparsities):
         """Log the sparsity.
@@ -266,20 +310,22 @@ class Monitor:
         :return: True
         """
 
-        G_sparsity, G_W1_sparsity, G_W2_sparsity, G_W3_sparsity = G_sparsities
-        D_sparsity, D_W1_sparsity, D_W2_sparsity, D_W3_sparsity = D_sparsities
+        if self.f_sparsity_G:
+            G_sparsity, G_W1_sparsity, G_W2_sparsity, G_W3_sparsity = G_sparsities
+            D_sparsity, D_W1_sparsity, D_W2_sparsity, D_W3_sparsity = D_sparsities
 
-        self.f_sparsity_G.write(struct.pack('f', G_sparsity))
-        self.f_sparsity_G_W1.write(struct.pack('f', G_W1_sparsity))
-        self.f_sparsity_G_W2.write(struct.pack('f', G_W2_sparsity))
-        self.f_sparsity_G_W3.write(struct.pack('f', G_W3_sparsity))
+            self.f_sparsity_G.write(struct.pack('f', G_sparsity))
+            self.f_sparsity_G_W1.write(struct.pack('f', G_W1_sparsity))
+            self.f_sparsity_G_W2.write(struct.pack('f', G_W2_sparsity))
+            self.f_sparsity_G_W3.write(struct.pack('f', G_W3_sparsity))
+            self.f_sparsity_D.write(struct.pack('f', D_sparsity))
+            self.f_sparsity_D_W1.write(struct.pack('f', D_W1_sparsity))
+            self.f_sparsity_D_W2.write(struct.pack('f', D_W2_sparsity))
+            self.f_sparsity_D_W3.write(struct.pack('f', D_W3_sparsity))
 
-        self.f_sparsity_D.write(struct.pack('f', D_sparsity))
-        self.f_sparsity_D_W1.write(struct.pack('f', D_W1_sparsity))
-        self.f_sparsity_D_W2.write(struct.pack('f', D_W2_sparsity))
-        self.f_sparsity_D_W3.write(struct.pack('f', D_W3_sparsity))
+            return True
 
-        return True
+        return None
 
     def log_flops(self):
         """Log the FLOPs.
@@ -287,11 +333,13 @@ class Monitor:
         :return: True
         """
 
-        # Todo
-        self.f_FLOPs_G.write()
-        self.f_FLOPs_D.write()
+        if self.f_FLOPs_G:
+            # Todo
+            self.f_FLOPs_G.write()
+            self.f_FLOPs_D.write()
+            return True
 
-        return True
+        return None
 
     def log_loss(self, loss_G, loss_D, loss_MSE):
         """Log the loss.
@@ -303,11 +351,13 @@ class Monitor:
         :return: True
         """
 
-        self.f_loss_G.write(struct.pack('f', loss_G))
-        self.f_loss_D.write(struct.pack('f', loss_D))
-        self.f_loss_MSE.write(struct.pack('f', loss_MSE))
+        if self.f_loss_G:
+            self.f_loss_G.write(struct.pack('f', loss_G))
+            self.f_loss_D.write(struct.pack('f', loss_D))
+            self.f_loss_MSE.write(struct.pack('f', loss_MSE))
+            return True
 
-        return True
+        return None
 
     def log_all(self, imputed_data, G_sparsities, D_sparsities, loss_G, loss_D, loss_MSE):
         """Log the all monitors.
@@ -333,143 +383,101 @@ class Monitor:
 
         return True
 
-    # Stop monitors
+    # -- Stop monitors ------------------------------------------------------------------------------------------------
+
     def stop_rmse_monitor(self):
-        """Flush, sync and close the RMSE log file and stop monitoring.
+        """Close the RMSE log file and stop monitoring.
 
         :return: False
         """
 
-        self.f_RMSE.flush()
-        fsync(self.f_RMSE.fileno())
-        self.f_RMSE.close()
+        if self.f_RMSE:
+            self.f_RMSE.close()
+            if self.verbose: print('Stopped monitoring RMSE.')
 
-        if self.verbose: print('Stopped monitoring RMSE.')
         return False
 
     def stop_imputation_time_monitor(self):
-        """Flush, sync and close the imputation time log file and stop monitoring.
+        """Close the imputation time log file and stop monitoring.
 
         :return: False
         """
 
-        self.f_imputation_time.flush()
-        fsync(self.f_imputation_time.fileno())
-        self.f_imputation_time.close()
+        if self.f_imputation_time:
+            self.f_imputation_time.close()
+            if self.verbose: print('Stopped monitoring imputation time.')
 
-        if self.verbose: print('Stopped monitoring imputation time.')
         return False
 
     def stop_memory_usage_monitor(self):
-        """Flush, sync and close the memory usage log file and stop monitoring.
+        """Close the memory usage log file and stop monitoring.
 
         :return: False
         """
 
-        self.f_memory_usage.flush()
-        fsync(self.f_memory_usage.fileno())
-        self.f_memory_usage.close()
+        if self.f_memory_usage:
+            self.f_memory_usage.close()
+            if self.verbose: print('Stopped monitoring memory usage.')
 
-        # if self.verbose: print('Stopped monitoring memory usage.')
         return False
 
     def stop_energy_consumption_monitor(self):
-        """Flush, sync and close the energy consumption log file and stop monitoring.
+        """Close the energy consumption log file and stop monitoring.
 
         :return: False
         """
 
-        self.f_energy_consumption.flush()
-        fsync(self.f_energy_consumption.fileno())
-        self.f_energy_consumption.close()
+        if self.f_energy_consumption:
+            self.f_energy_consumption.close()
+            if self.verbose: print('Stopped monitoring energy consumption.')
 
-        # if self.verbose: print('Stopped monitoring energy consumption.')
         return False
 
     def stop_sparsity_monitor(self):
-        """Flush, sync and close the sparsity log files and stop monitoring.
+        """Close the sparsity log files and stop monitoring.
 
         :return: False
         """
 
-        # Generator
-        self.f_sparsity_G.flush()
-        fsync(self.f_sparsity_G.fileno())
-        self.f_sparsity_G.close()
+        if self.f_sparsity_G:
+            self.f_sparsity_G.close()
+            self.f_sparsity_G_W1.close()
+            self.f_sparsity_G_W2.close()
+            self.f_sparsity_G_W3.close()
+            self.f_sparsity_D.close()
+            self.f_sparsity_D_W1.close()
+            self.f_sparsity_D_W2.close()
+            self.f_sparsity_D_W3.close()
 
-        self.f_sparsity_G_W1.flush()
-        fsync(self.f_sparsity_G_W1.fileno())
-        self.f_sparsity_G_W1.close()
+            if self.verbose: print('Stopped monitoring sparsity.')
 
-        self.f_sparsity_G_W2.flush()
-        fsync(self.f_sparsity_G_W2.fileno())
-        self.f_sparsity_G_W2.close()
-
-        self.f_sparsity_G_W3.flush()
-        fsync(self.f_sparsity_G_W3.fileno())
-        self.f_sparsity_G_W3.close()
-
-        # Discriminator
-        self.f_sparsity_D.flush()
-        fsync(self.f_sparsity_D.fileno())
-        self.f_sparsity_D.close()
-
-        self.f_sparsity_D_W1.flush()
-        fsync(self.f_sparsity_D_W1.fileno())
-        self.f_sparsity_D_W1.close()
-
-        self.f_sparsity_D_W2.flush()
-        fsync(self.f_sparsity_D_W2.fileno())
-        self.f_sparsity_D_W2.close()
-
-        self.f_sparsity_D_W3.flush()
-        fsync(self.f_sparsity_D_W3.fileno())
-        self.f_sparsity_D_W3.close()
-
-        if self.verbose: print('Stopped monitoring sparsity.')
         return False
 
     def stop_flops_monitor(self):
-        """Flush, sync and close the FLOPs log files and stop monitoring.
+        """Close the FLOPs log files and stop monitoring.
 
         :return: False
         """
 
-        # Generator
-        self.f_FLOPs_G.flush()
-        fsync(self.f_FLOPs_G.fileno())
-        self.f_FLOPs_G.close()
+        if self.f_FLOPs_G:
+            self.f_FLOPs_G.close()
+            self.f_FLOPs_D.close()
+            if self.verbose: print('Stopped monitoring FLOPs.')
 
-        # Discriminator
-        self.f_FLOPs_D.flush()
-        fsync(self.f_FLOPs_D.fileno())
-        self.f_FLOPs_D.close()
-
-        # if self.verbose: print('Stopped monitoring FLOPs.')
         return False
 
     def stop_loss_monitor(self):
-        """Flush, sync and close the loss log files and stop monitoring.
+        """Close the loss log files and stop monitoring.
 
         :return: False
         """
 
-        # Generator (cross entropy)
-        self.f_loss_G.flush()
-        fsync(self.f_loss_G.fileno())
-        self.f_loss_G.close()
+        if self.f_loss_G:
+            self.f_loss_G.close()
+            self.f_loss_D.close()
+            self.f_loss_MSE.close()
+            if self.verbose: print('Stopped monitoring loss (cross entropy and MSE).')
 
-        # Discriminator (cross entropy)
-        self.f_loss_D.flush()
-        fsync(self.f_loss_D.fileno())
-        self.f_loss_D.close()
-
-        # MSE
-        self.f_loss_MSE.flush()
-        fsync(self.f_loss_MSE.fileno())
-        self.f_loss_MSE.close()
-
-        if self.verbose: print('Stopped monitoring loss (cross entropy and MSE).')
         return False
 
     def stop_all_monitors(self):
@@ -488,6 +496,8 @@ class Monitor:
 
         if self.verbose: print('Stopped monitors.')
         return False
+
+    # -- Store trained model ------------------------------------------------------------------------------------------
 
     def set_model(self, theta_G, theta_D):
         """Set the (trained) model, so it can be saved later.

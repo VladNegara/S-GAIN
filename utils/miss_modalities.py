@@ -11,3 +11,30 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+"""Miss modality functions for the data loader of S-GAIN:
+
+Miss modalities:
+(1) MAR:
+(2) MNAR:
+(3) upscaler:
+(4) square:
+"""
+
+
+# -- Miss modalities --------------------------------------------------------------------------------------------------
+
+def MAR():
+    pass
+
+
+def MNAR():
+    pass
+
+
+def upscaler():
+    pass
+
+
+def square():
+    pass

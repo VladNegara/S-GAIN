@@ -38,6 +38,8 @@ from utils.inits_TFv2_INT8 import normal_xavier_init
 from utils.utils import binary_sampler, uniform_sampler, sample_batch_index, normalization, renormalization, rounding
 
 
+# -- Models -----------------------------------------------------------------------------------------------------------
+
 def generator(miss_data_x, mask, theta):
     """
 
@@ -122,20 +124,22 @@ def discriminator(miss_data_x, hint, theta):
     model.add(L3)
 
 
+# -- S-GAIN -----------------------------------------------------------------------------------------------------------
+
 def s_gain(miss_data_x, batch_size=128, hint_rate=0.9, alpha=100, iterations=10000,
-           generator_sparsity=0, generator_modality='dense', discriminator_sparsity=0, discriminator_modality='dense',
-           verbose=False, no_model=True, monitor=None):
+           generator_initialization='dense', generator_sparsity=0, discriminator_initialization='dense',
+           discriminator_sparsity=0, verbose=False, no_model=True, monitor=None):
     """Impute the missing values in miss_data_x.
 
     :param miss_data_x: the data with missing values
-    :param batch_size: the number of samples in mini-batch
+    :param batch_size: the number of samples in the mini-batch
     :param hint_rate: the hint probability
     :param alpha: the hyperparameter
     :param iterations: the number of training iterations (epochs)
+    :param generator_initialization: the initialization and pruning and regrowth strategy of the generator
     :param generator_sparsity: the probability of sparsity in the generator
-    :param generator_modality: the initialization and pruning and regrowth strategy of the generator
+    :param discriminator_initialization: the initialization and pruning and regrowth strategy of the discriminator
     :param discriminator_sparsity: the probability of sparsity in the discriminator
-    :param discriminator_modality: the initialization and pruning and regrowth strategy of the discriminator
     :param verbose: enable verbose output to console
     :param no_model: don't save the trained model
     :param monitor: the monitor object used for the measurements
@@ -295,6 +299,11 @@ def s_gain(miss_data_x, batch_size=128, hint_rate=0.9, alpha=100, iterations=100
     # Rounding
     if verbose: print('Rounding data...')
     imputed_data_x = rounding(imputed_data_x, miss_data_x)
+
+    # Only impute missing data
+    data_mask = np.zeros(miss_data_x.shape, dtype=int)
+    data_mask[np.isnan(miss_data_x)] = 1
+    imputed_data_x = np.where(data_mask, imputed_data_x, miss_data_x)
 
     # Reshaping
     if reshaped:

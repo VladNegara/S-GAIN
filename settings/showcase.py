@@ -14,8 +14,8 @@
 
 """Settings file for S-GAIN.
 
-These are the settings used for B.P. van Oers, I. Baysal Erez, M. van Keulen, "Sparse GAIN: Imputation Methods to Handle
-Missing Values with Sparse Initialization", IDEAL conference, 2025.
+These are showcase settings.
+The experiments are intended to complete quickly in order to give a demonstration of the system.
 
 All possible combination of settings are run for every listed item. Nonsense is de facto excluded,
 i.e. dense initialization with > 0% sparsity or other initializations with 0% sparsity.
@@ -40,7 +40,7 @@ Settings:
 
 # -- Data preparation settings ----------------------------------------------------------------------------------------
 
-dataset = ['spam', 'letter', 'health', 'fashion_mnist']
+dataset = ['letter']
 # The dataset to use.
 # Options: ['spam', 'letter', 'health', 'mnist', 'fashion_mnist', 'cifar10']
 # Default: ['spam', 'letter']
@@ -55,21 +55,19 @@ miss_modality = ['MCAR']
 # Options: ['MCAR', 'MAR', 'MNAR', 'upscaler', 'square']
 # Default: ['MCAR']
 
-seed = [None]
+seed = [0]
 # The seed used to introduce missing elements in the data.
 # * Use None for a random seed.
 # Int [0, 2^31)
 # Default: [0]
 
-prepared_datasets_folder = 'datasets/prepared'
+prepared_datasets_folder = 'prepared_datasets_showcase'
 # The folder to store the prepared datasets in.
-# * This setting was not implemented when this paper was written.
 # Default: 'datasets/prepared'
 
 store_prepared_dataset = True
 # Whether to store the prepared dataset.
-#  * Useful time intensive miss modalities, i.e. MAR, or for analysis.
-# ** This setting was not implemented when this paper was written.
+# * Useful for time intensive miss modalities, i.e. MAR, or for analysis.
 # Default: True
 
 
@@ -77,7 +75,6 @@ store_prepared_dataset = True
 
 version = ['TFv1_FP32']
 # The S-GAIN version.
-# * This setting was not implemented when this paper was written.
 # Options: ['TFv1_FP32', 'TFv1_INT8']
 # Default: ['TFv1_FP32']
 
@@ -97,145 +94,127 @@ iterations = [10000]
 # The number of training iterations.
 # Default: [10000]
 
-clipping = False
+clipping = True
 # Enable clipping for D_prob.
-# * This setting was not implemented when this paper was written.
 # Default: True
 
 
 # -- Generator settings -----------------------------------------------------------------------------------------------
 
-generator_initialization = ['dense', 'random', 'ER', 'ERNR']
+generator_initialization = ['dense', 'random', 'ERNR']
 # the initialization strategy of the generator.
-# * erdos_renyi_normal_random (ERNR) is the updated terminology for erdos_renyi_random_weight (ERRW)
 # Options: ['dense', 'random', 'ER', 'ERNR'] Todo add what your students added
 # Default: ['dense']
 
-generator_sparsity = [0, 0.6, 0.8, 0.9, 0.95, 0.99]
+generator_sparsity = [0, 0.5, 0.99]
 # The probability of sparsity in the generator.
 # Float [0, 1)
 # Default: [0]
 
 generator_pruner = [None]
 # The pruning strategy of the generator.
-# * This setting was not implemented when this paper was written.
 # Options: ['random', 'magnitude', None]
 # Default: [None]
 
 generator_prune_rate = [0]
 # The probability of pruning a non-zero weight in the generator,
 # based on the number of non-zero weights at initialization.
-# * This setting was not implemented when this paper was written.
 # Float [0, 1)
 # Default: [0]
 
 generator_prune_period = [0]
 # The number of iterations before pruning the generator,
 # after initialization or previous pruning.
-# * This setting was not implemented when this paper was written.
 # Default: [0]
 
 generator_regrower = [None]
 # The regrowing strategy of the generator.
-# * This setting was not implemented when this paper was written.
 # Options: ['random', None]
 # Default: [None]
 
 generator_regrow_rate = [0]
 # The probability of regrowing a zero weight in the generator,
 # based on the number of non-zero weights at initialization.
-# * This setting was not implemented when this paper was written.
 # Float [0, 1)
 # Default: [0]
 
 generator_regrow_period = [0]
 # The number of iterations before regrowing the generator,
 # after initialization or previous regrowing.
-# * This setting was not implemented when this paper was written.
 # Float [0, 1)
 # Default: [0]
 
 generator_strategy = [None]
 # Options:  [None] Todo add what your students added
 # The training strategy of the generator.
-# * This setting was not implemented when this paper was written.
 # Default: [None]
 
 generator_use_strategy = False
 # Use a complete training strategy for the generator, instead of
 # separate initialization, pruning and regrowing strategies.
-# * This setting was not implemented when this paper was written.
 # Default: False
 
 
 # -- Discriminator settings -------------------------------------------------------------------------------------------
 
-discriminator_initialization = ['dense']
+discriminator_initialization = ['dense', 'random', 'ERNR']
 # The initialization strategy of the discriminator.
 # Options: ['dense', 'random', 'ER', 'ERNR'] Todo add what your students added
 # Default: ['dense']
 
-discriminator_sparsity = [0]
+discriminator_sparsity = [0, 0.2, 0.5]
 # The probability of sparsity in the discriminator.
 # Float [0, 1)
 # Default: [0]
 
 discriminator_pruner = [None]
 # The pruning strategy of the discriminator.
-# * This setting was not implemented when this paper was written.
 # Options: ['random', 'magnitude', None]
 # Default: [None]
 
 discriminator_prune_rate = [0]
 # The probability of pruning a non-zero weight in the discriminator,
 # based on the number of non-zero weights at initialization.
-# * This setting was not implemented when this paper was written.
 # Float [0, 1)
 # Default: [0]
 
 discriminator_prune_period = [0]
 # The number of iterations before pruning the discriminator,
 # after initialization or previous pruning.
-# * This setting was not implemented when this paper was written.
 # Float [0, 1)
 # Default: [0]
 
 discriminator_regrower = [None]
 # The regrowing strategy of the discriminator.
-# * This setting was not implemented when this paper was written.
 # Options: ['random', None]
 # Default: [None]
 
 discriminator_regrow_rate = [0]
 # The probability of regrowing a zero weight in the discriminator,
 # based on the number of non-zero weights at initialization.
-# * This setting was not implemented when this paper was written.
 # Float [0, 1)
 # Default: [0]
 
 discriminator_regrow_period = [0]
 # The number of iterations before regrowing the discriminator,
 # after initialization or previous regrowing.
-# * This setting was not implemented when this paper was written.
 # Float [0, 1)
 # Default: [0]
 
 discriminator_strategy = [None]
 # The training strategy of the discriminator.
-# * This setting was not implemented when this paper was written.
 # Options: [None] Todo add what your students added
 # Default: [None]
 
 discriminator_use_strategy = False
 # Use a complete training strategy for the discriminator, instead of
 # separate initialization, pruning and regrowing strategies.
-# * This setting was not implemented when this paper was written.
 # Default: False
 
 
 # -- Output settings --------------------------------------------------------------------------------------------------
 
-output_folder = 'output'
+output_folder = 'output_showcase'
 # The folder to save experiments to.
 # Default: 'output'
 
@@ -265,22 +244,18 @@ enable_rmse_monitor = True
 
 enable_imputation_time_monitor = True
 # Enable monitoring of the imputation time.
-# * This setting was not implemented when this paper was written.
 # Default: True
 
 enable_memory_usage_monitor = False
 # Enable monitoring of the memory usage. Todo implement
-# * This setting was not implemented when this paper was written.
 # Default: True
 
 enable_energy_consumption_monitor = False
 # Enable monitoring of the energy consumption. Todo implement
-# * This setting was not implemented when this paper was written.
 # Default: True
 
 enable_sparsity_monitor = True
 # Enable monitoring of the sparsity of both models.
-# * This setting was not implemented when this paper was written.
 # Default: True
 
 enable_FLOPs_monitor = False
@@ -290,13 +265,12 @@ enable_FLOPs_monitor = False
 
 enable_loss_monitor = True
 # Enable monitoring of the losses (cross entropy and MSE).
-# * This setting was not implemented when this paper was written.
 # Default: True
 
 
 # -- Run settings -----------------------------------------------------------------------------------------------------
 
-n_runs = 10
+n_runs = 3
 # The number of times each experiment should be performed.
 # Default: 10
 
@@ -305,10 +279,9 @@ retry_failed_experiments = True
 # or reaches max_failed_experiments.
 # Default: True
 
-max_failed_experiments = 40
+max_failed_experiments = 9
 # The maximum number of times the experiment can fail.
-#  * Used to prevent infinite loops.
-# ** This setting was not implemented when this paper was written.
+# * Used to prevent infinite loops.
 # Default: 40 (success_rate < 20%)
 
 ignore_existing_files = False
@@ -320,11 +293,11 @@ ignore_existing_files = False
 
 # -- Analysis settings ------------------------------------------------------------------------------------------------
 
-analysis_folder = 'analysis'
+analysis_folder = 'analysis_showcase'
 # The folder to save the analysis to.
 # Default: 'analysis'
 
-perform_analysis = True
+perform_analysis = False
 # Automatically analyze the experiments after completion.
 # Default: True
 
@@ -342,29 +315,20 @@ plot_success_rate = True
 
 plot_imputation_time = True
 # Plot the imputation time graphs.
-# * This setting was not implemented when this paper was written.
 # Default: True
 
 plot_memory_usage = False
 # Plot the memory usage graphs. Todo implement
-# * This setting was not implemented when this paper was written.
 # Default: True
 
 plot_energy_consumption = False
 # Plot the energy consumption graphs. Todo implement
-# * This setting was not implemented when this paper was written.
 # Default: True
 
 
 # -- Inclusions -------------------------------------------------------------------------------------------------------
 
-inclusions = [{
-    'n_runs': 1,
-    'dataset': ['health', 'fashion_mnist'],
-    'enable_FLOPs_monitor': True,
-    'output_folder': 'output_FLOPs',
-    'perform_analysis': False
-}]
+inclusions = []
 # An inclusion is a dictionary of settings. It overwrites the base
 # config and adds the newly specified experiments. The config reloads
 # before each inclusion and previously made changes don't carry over.
@@ -402,11 +366,9 @@ verbose = True
 
 no_system_information = False
 # Don't log system information.
-# * This setting was not implemented when this paper was written.
 # Default: False
 
 auto_shutdown = False
 # Automatically shutdown the computer after running the experiments
 # and performing the analyses.
-# * This setting was not implemented when this paper was written.
 # Default: False

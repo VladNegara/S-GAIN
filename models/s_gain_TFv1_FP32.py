@@ -57,12 +57,12 @@ def s_gain(miss_data_x, batch_size=128, hint_rate=0.9, alpha=100, iterations=100
     - imputed_data_x: the imputed data
     """
 
-    if verbose: print('Starting GAIN...')
-
     # Start monitors
-    if monitor is not None:
+    if monitor:
         monitor.init_monitor()
         monitor.start_all_monitors()
+
+    if verbose: print('Starting GAIN...')
 
     # Reshape the missing data
     shape = miss_data_x.shape
@@ -286,6 +286,49 @@ def s_gain(miss_data_x, batch_size=128, hint_rate=0.9, alpha=100, iterations=100
 
     if verbose: print('Finished training.')
 
+    def get_image_imputation():
+        """ Check the imputation of a square image from the model and saves it
+        """
+        import random
+
+        random_img = random.randint(0, len(miss_data_x)-1)
+        img_np = miss_data_x[random_img]
+
+        # Regenerate mask
+        mask_np = 1 - np.isnan(img_np)
+        mask_np = mask_np.astype(np.float32)
+
+        # Simple normalization (0–1) ignoring NaNs
+        img_filled = np.nan_to_num(img_np, nan=0.0)
+        img_norm = img_filled / 255.0
+
+        # Add noise where pixels are missing
+        X_input = mask_np * img_norm + (1 - mask_np) * np.random.uniform(0, 0.01, size=img_norm.shape)
+        X_input = X_input.reshape(1, -1).astype(np.float32)
+
+        # Run inference
+        imputed = sess.run(G_sample, feed_dict={X: X_input, M: mask_np.reshape(1, -1)})[0]
+        # Convert imputed result back to 0–255 range
+        imputed = np.clip(imputed * 255.0, 0, 255)
+        # print(miss_data_x[0])
+        # print(imputed)
+
+        from PIL import Image
+
+        orig = np.nan_to_num(img_np, nan=0.0).reshape(28, 28)
+        imputed_img = imputed.reshape(28, 28)
+
+        # Stack side-by-side for comparison
+        comparison = np.hstack([orig, imputed_img])
+        comparison_img = Image.fromarray(comparison.astype(np.uint8))
+        # comparison_img.show()
+        comparison_img.save("imputed_comparison.png")
+
+
+    # Using fashion_mnist dataset
+    # if len(miss_data_x[0]) == 784:
+    #     get_image_imputation()
+
     # Return the imputed data
     Z_mb = uniform_sampler(0, 0.01, no, dim)
     M_mb = data_mask
@@ -304,6 +347,11 @@ def s_gain(miss_data_x, batch_size=128, hint_rate=0.9, alpha=100, iterations=100
     # Rounding
     if verbose: print('Rounding data...')
     imputed_data_x = rounding(imputed_data_x, miss_data_x)
+
+    # Only impute missing data
+    data_mask = np.zeros(miss_data_x.shape, dtype=int)
+    data_mask[np.isnan(miss_data_x)] = 1
+    imputed_data_x = np.where(data_mask, imputed_data_x, miss_data_x)
 
     # Reshaping
     if reshaped:
